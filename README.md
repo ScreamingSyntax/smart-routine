@@ -13,8 +13,12 @@ The College Schedule Management Tool includes the following features:
 ## Usage
 To use this app, follow these steps:
 
-1.) Open the app on your local machine
+1.) Open the app on your local machine.
+
 2.) Signup with valid college email address.
+
 3.) Customize your settings as needed.
-4.) Set up the notification system to receive reminders before your classes start
+
+4.) Set up the notification system to receive reminders before your classes start.
+
 5.) Enjoy an easier and more efficient way of managing your class schedule
