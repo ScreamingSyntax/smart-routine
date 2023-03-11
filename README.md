@@ -1,16 +1,20 @@
-# routine_app
+# College Schedule Management Tool
 
-A new Flutter project.
+This project is designed to help college students manage their schedules and stay on top of their studies. It provides a modern and efficient way of managing class schedules, with a user-friendly interface, powerful notification system, and customizable scheduling options.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+The College Schedule Management Tool includes the following features:
 
-A few resources to get you started if this is your first Flutter project:
+- User-friendly interface
+- Powerful notification system
+- Customizable scheduling options
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Usage
+To use this app, follow these steps:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1.) Open the app on your local machine
+2.) Signup with valid college email address.
+3.) Customize your settings as needed.
+4.) Set up the notification system to receive reminders before your classes start
+5.) Enjoy an easier and more efficient way of managing your class schedule
