@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:routine_app/models/sections.dart';
-import 'package:routine_app/pages/section.dart';
+import 'package:routine_app/pages/home_page.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../routes/my_routes.dart';
@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => SectionSelection(),
+          builder: (context) => HomePage(),
         ),
       );
     }

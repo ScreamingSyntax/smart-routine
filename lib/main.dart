@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:routine_app/pages/first_page.dart';
-import 'package:routine_app/pages/days.dart';
 import 'package:routine_app/pages/login_page.dart';
-import 'package:routine_app/pages/routine_page.dart';
 import 'package:routine_app/pages/signup_page.dart';
 import 'package:routine_app/routes/my_routes.dart';
 import 'package:routine_app/themes/my_themes.dart';
@@ -27,7 +25,7 @@ class MyApp extends StatelessWidget {
       darkTheme: MyThemes.darkTheme(context),
       // initialRoute: MyRoutes.firstPage,
       routes: {
-        MyRoutes.firstPage: (context) => const FirstPage(),
+        MyRoutes.firstPage: (context) => FirstPage(),
         MyRoutes.loginPage: (context) => LoginPage(),
         MyRoutes.signUpPage: (context) => const SignUpPage(),
       },

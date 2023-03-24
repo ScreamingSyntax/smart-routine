@@ -18,7 +18,7 @@ class HeadingContext extends StatelessWidget {
           child: Image.asset(
             "assets/images/iic.png",
             filterQuality: FilterQuality.high,
-            scale: 3,
+            scale: 4,
 
             // alignment: Alignment.topLeft,
             // fit: BoxFit.scaleDown,

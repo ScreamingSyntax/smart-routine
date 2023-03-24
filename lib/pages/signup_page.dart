@@ -30,44 +30,57 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Container(
           // padding: const EdgeInsets.all(20.0),
           constraints: const BoxConstraints.expand(),
           child: Column(
             // verticalDirection: VerticalDirection.up,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             // ignore: prefer_const_literals_to_create_immutables
             children: <Widget>[
-              const HeadingContext(),
-              Column(
-                children: [
-                  "Sign Up"
-                      .text
-                      .color(Theme.of(context).colorScheme.onSecondary)
-                      .bold
-                      .xl5
-                      .make(),
-                  "Please Enter Valid Credentials"
-                      .text
-                      .textStyle(context.captionStyle)
-                      .lg
-                      .make(),
-                ],
-              ),
               Padding(
-                padding: const EdgeInsets.all(30.0),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 50,
+                ),
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _textFields(context),
-                    _lowerPage(context),
+                    const HeadingContext(),
+                    "Sign Up"
+                        .text
+                        .color(Theme.of(context).colorScheme.onSecondary)
+                        .bold
+                        .xl5
+                        .make(),
+                    "Please Enter Valid Credentials"
+                        .text
+                        .textStyle(context.captionStyle)
+                        .lg
+                        .make(),
                   ],
                 ),
               ),
-              const BottomContent()
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 30.0, vertical: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _textFields(context),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: _lowerPage(context),
+              ),
+              // const BottomContent()
             ],
           ),
         ),
@@ -263,54 +276,57 @@ class _SignUpPageState extends State<SignUpPage> {
           ],
         ),
       );
-  Widget _lowerPage(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          ElevatedButton(
-            onPressed: () => _validation(context),
-            style: ButtonStyle(
-              fixedSize: MaterialStateProperty.all(
-                Size(
-                  MediaQuery.of(context).size.width /
-                      0.001, // 80% of screen width
-                  MediaQuery.of(context).size.height *
-                      0.07, // // 8% of screen height
+  Widget _lowerPage(BuildContext context) => Container(
+        color: Colors.transparent,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            ElevatedButton(
+              onPressed: () => _validation(context),
+              style: ButtonStyle(
+                fixedSize: MaterialStateProperty.all(
+                  Size(
+                    MediaQuery.of(context).size.width /
+                        0.001, // 80% of screen width
+                    MediaQuery.of(context).size.height *
+                        0.07, // // 8% of screen height
+                  ),
+                ),
+                shape: MaterialStateProperty.all(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
               ),
-              shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
+              child: Text(
+                "Sign Up",
+                style: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.04,
+                    fontWeight: FontWeight.bold),
               ),
             ),
-            child: Text(
-              "Sign Up",
-              style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.04,
-                  fontWeight: FontWeight.bold),
+            SizedBox(
+              height: 20,
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              "Already Have an "
-                  .text
-                  .color(Theme.of(context).colorScheme.onSecondary)
-                  .make(),
-              " ".text.make(),
-              "Account ?"
-                  .text
-                  .bold
-                  .color(Theme.of(context).colorScheme.primary)
-                  .make()
-                  .onTap(() {
-                Navigator.pushNamed(context, MyRoutes.loginPage);
-              })
-            ],
-          ),
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                "Already Have an "
+                    .text
+                    .color(Theme.of(context).colorScheme.onSecondary)
+                    .make(),
+                " ".text.make(),
+                "Account ?"
+                    .text
+                    .bold
+                    .color(Theme.of(context).colorScheme.primary)
+                    .make()
+                    .onTap(() {
+                  Navigator.pushNamed(context, MyRoutes.loginPage);
+                })
+              ],
+            ),
+          ],
+        ),
       );
 }
