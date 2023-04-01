@@ -6,6 +6,9 @@ import '../routes/my_routes.dart';
 import '../styles/text_form_field.dart';
 import '../validation/my_validations.dart';
 import 'login_page.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -19,12 +22,101 @@ class _SignUpPageState extends State<SignUpPage> {
 
   String password2 = "";
 
-  final _formKey = GlobalKey<FormState>();
-  void _validation(BuildContext context) {
-    if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+  FToast? fToast;
+
+  final name = TextEditingController();
+  final email = TextEditingController();
+  final password = TextEditingController();
+
+  @override
+  void initState() {
+    // name.addListener(() { })
+    super.initState();
+    fToast = FToast();
+    fToast!.init(context);
+  }
+
+  @override
+  void dispose() {
+    name.dispose();
+    email.dispose();
+    password.dispose();
+    super.dispose();
+  }
+
+  Future<bool> signUp(String name, String email, String password) async {
+    print(name);
+    print(email);
+    print(password);
+    try {
+      Response response = await post(
+          Uri.parse("https://hostingsyp.up.railway.app/api/users/"),
+          headers: {"Content-Type": "application/json"},
+          body:
+              jsonEncode({"name": name, "email": email, "password": password}));
+      if (response.statusCode == 200) {
+        _showToast("Account Created Successfully");
+        return true;
+      }
+      if (response.statusCode == 500) {
+        _showToast("Email Already Exists");
+      } else {
+        _showToast("Failed To create an Account");
+      }
+    } catch (e) {
+      _showToast("Server Issue");
     }
+    return false;
+  }
+
+  final _formKey = GlobalKey<FormState>();
+  void _validation(BuildContext context) async {
+    if (_formKey.currentState!.validate()) {
+      // Navigator.pushReplacement(
+      //     context, MaterialPageRoute(builder: (context) => LoginPage()));
+      bool check = await signUp(name.text, email.text, password.text);
+      if (check) {
+        await Future.delayed(Duration(seconds: 2));
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      }
+    }
+  }
+
+  _showToast(String message) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(
+          10.0,
+        ),
+        // border: Border.all(color: Colors.blue),
+        color: Colors.black54,
+      ),
+      child: Row(
+        // mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            color: Colors.white,
+          ),
+          SizedBox(
+            width: 12.0,
+          ),
+          Text(
+            message,
+            style: TextStyle(
+                color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    );
+    fToast?.showToast(
+        child: toast,
+        gravity: ToastGravity.BOTTOM,
+        fadeDuration: Duration(seconds: 0),
+        toastDuration: Duration(seconds: 1));
   }
 
   @override
@@ -47,7 +139,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 child: Column(
                   children: [
-                    const HeadingContext(),
                     "Sign Up"
                         .text
                         .color(Theme.of(context).colorScheme.onSecondary)
@@ -93,6 +184,7 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           children: [
             TextFormField(
+              controller: name,
               validator: (value) {
                 NameValidation ac = NameValidation(
                     value: value,
@@ -101,15 +193,15 @@ class _SignUpPageState extends State<SignUpPage> {
                     maxLength: 10);
                 String? error = ac.empty();
                 if (error != null) {
-                  return error;
+                  return _showToast(error);
                 }
                 error = ac.specialCharacters();
                 if (error != null) {
-                  return error;
+                  return _showToast(error);
                 }
                 error = ac.fullNameValidation();
                 if (error != null) {
-                  return error;
+                  return _showToast(error);
                 }
                 return null;
               },
@@ -119,6 +211,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   context: context),
             ),
             TextFormField(
+              controller: email,
               validator: (value) {
                 EmailValidation ac = EmailValidation(
                     value: value,
@@ -127,11 +220,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     maxLength: 50);
                 String? error = ac.empty();
                 if (error != null) {
-                  return error;
+                  return _showToast(error);
                 }
                 error = ac.domainValidation();
                 if (error != null) {
-                  return error;
+                  return _showToast(error);
                 }
                 return null;
               },
@@ -141,6 +234,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   context: context),
             ),
             TextFormField(
+                controller: password,
                 onChanged: (value) {
                   password1 = value;
                   setState(() {});
@@ -154,18 +248,19 @@ class _SignUpPageState extends State<SignUpPage> {
                   );
                   String? error = ac.empty();
                   if (error != null) {
-                    return error;
+                    return _showToast(error);
                   }
                   error = ac.length();
                   if (error != null) {
-                    return error;
+                    return _showToast(error);
                   }
                   error = ac.passwordSecurity();
                   if (error != null) {
-                    return error;
+                    return _showToast(error);
                   }
                   if (password2 != value) {
-                    return "${ac.validationType} do not match";
+                    return _showToast(
+                        "${ac.validationType} Field do not match");
                   }
                   return null;
                 },
@@ -220,20 +315,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     validationType: "Password",
                     minLength: 7,
                     maxLength: 20);
-                String? error = ac.empty();
-                if (error != null) {
-                  return error;
-                }
-                error = ac.length();
-                if (error != null) {
-                  return error;
-                }
-                error = ac.passwordSecurity();
-                if (error != null) {
-                  return error;
-                }
                 if (password1.toString() != value) {
-                  return "${ac.validationType} Field do not match";
+                  _showToast("${ac.validationType} Field do not match");
                 }
                 return null;
               },

@@ -41,6 +41,9 @@ dependencies:
   flutter_splash_screen: ^1.0.0+6
   flutter_native_splash: ^2.2.19
   curved_navigation_bar: ^1.0.3
+  fluttertoast: ^8.2.1
+  modal_progress_hud_nsn: ^0.3.0
+  http: ^0.13.5
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:routine_app/models/sections.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:routine_app/pages/home_page.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -21,18 +21,70 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  FToast? fToast;
+  final email = TextEditingController();
+  final password = TextEditingController();
+  void initState() {
+    // name.addListener(() { })
+    super.initState();
+    fToast = FToast();
+    fToast!.init(context);
+  }
+
+  @override
+  void dispose() {
+    email.dispose();
+    password.dispose();
+    super.dispose();
+  }
+
   late String? _onchanged = "";
   var focusedField = true;
   final _formKey = GlobalKey<FormState>();
   void _validation(BuildContext context) {
     if (_formKey.currentState!.validate()) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(),
-        ),
-      );
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => HomePage(),
+      //   ),
     }
+  }
+
+  _showToast(String message) {
+    Widget toast = Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(
+          10.0,
+        ),
+        // border: Border.all(color: Colors.blue),
+        color: Colors.black54,
+      ),
+      child: Row(
+        // mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error_outline,
+            color: Colors.white,
+          ),
+          SizedBox(
+            width: 12.0,
+          ),
+          Text(
+            message,
+            style: TextStyle(
+                color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500),
+          ),
+        ],
+      ),
+    );
+    fToast?.showToast(
+        child: toast,
+        gravity: ToastGravity.BOTTOM,
+        fadeDuration: Duration(seconds: 0),
+        toastDuration: Duration(seconds: 1));
   }
 
   @override
@@ -100,11 +152,11 @@ class _LoginPageState extends State<LoginPage> {
                       maxLength: 50);
                   String? error = bc.empty();
                   if (error != null) {
-                    return error;
+                    return _showToast(error);
                   }
                   error = bc.domainValidation();
                   if (error != null) {
-                    return error;
+                    return _showToast(error);
                   }
                   return null;
                 },
@@ -125,15 +177,11 @@ class _LoginPageState extends State<LoginPage> {
                 );
                 String? error = ac.empty();
                 if (error != null) {
-                  return error;
+                  return _showToast(error);
                 }
                 error = ac.length();
                 if (error != null) {
-                  return error;
-                }
-                error = ac.passwordSecurity();
-                if (error != null) {
-                  return error;
+                  return _showToast(error);
                 }
                 return null;
               },

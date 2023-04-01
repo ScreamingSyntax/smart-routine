@@ -24,14 +24,17 @@ class _HomePageState extends State<HomePage> {
     Icon(
       Icons.home,
       size: 30,
+      color: Colors.white,
     ),
     Icon(
       Icons.settings,
       size: 30,
+      color: Colors.white,
     ),
     Icon(
       Icons.people_alt_rounded,
       size: 30,
+      color: Colors.white,
     )
   ];
 
@@ -40,13 +43,15 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: screens[index],
       extendBody: true,
-      backgroundColor: Colors.blueAccent,
+      backgroundColor: Colors.transparent,
       bottomNavigationBar: CurvedNavigationBar(
+        color: Colors.black,
         key: _navigationKey,
-        backgroundColor: Colors.blue,
-        buttonBackgroundColor: Colors.blue,
+        backgroundColor: Colors.transparent,
+        buttonBackgroundColor: Colors.black,
         height: 60,
         items: items,
+        animationCurve: Curves.easeInOutQuint,
         index: index,
         onTap: (index) => {this.index = index, setState(() => {})},
       ),

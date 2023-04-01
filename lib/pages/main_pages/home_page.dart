@@ -8,9 +8,13 @@ class HomePageMain extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text("Dadna"),
+        body: Container(
+      constraints: BoxConstraints.expand(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [Text("Under Construction")],
       ),
-    );
+    ));
   }
 }
