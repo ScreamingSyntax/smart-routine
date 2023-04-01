@@ -18,23 +18,23 @@ class _HomePageState extends State<HomePage> {
 
   final _navigationKey = GlobalKey<CurvedNavigationBarState>();
 
-  int index = 1;
+  int index = 0;
 
   final items = <Widget>[
     Icon(
       Icons.home,
       size: 30,
-      color: Colors.white,
+      color: Color(0xff62E962),
     ),
     Icon(
       Icons.settings,
       size: 30,
-      color: Colors.white,
+      color: Color(0xff62E962),
     ),
     Icon(
       Icons.people_alt_rounded,
       size: 30,
-      color: Colors.white,
+      color: Color(0xff62E962),
     )
   ];
 
@@ -45,10 +45,10 @@ class _HomePageState extends State<HomePage> {
       extendBody: true,
       backgroundColor: Colors.transparent,
       bottomNavigationBar: CurvedNavigationBar(
-        color: Colors.black,
+        color: Colors.white,
         key: _navigationKey,
         backgroundColor: Colors.transparent,
-        buttonBackgroundColor: Colors.black,
+        buttonBackgroundColor: Colors.white,
         height: 60,
         items: items,
         animationCurve: Curves.easeInOutQuint,

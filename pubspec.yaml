@@ -30,7 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  velocity_x: ^3.3.0
+  velocity_x: ^3.6.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -44,6 +44,7 @@ dependencies:
   fluttertoast: ^8.2.1
   modal_progress_hud_nsn: ^0.3.0
   http: ^0.13.5
+  flutter_secure_storage: ^8.0.0
 
 dev_dependencies:
   flutter_test:

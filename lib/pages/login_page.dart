@@ -1,7 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'dart:async';
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart';
 import 'package:routine_app/pages/home_page.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -9,9 +14,10 @@ import '../routes/my_routes.dart';
 import '../styles/text_form_field.dart';
 import '../validation/my_validations.dart';
 import '../widgets/login&signup/login_signup.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
-  static bool obscureText = false;
+  static bool obscureText = true;
   LoginPage({
     super.key,
   });
@@ -21,9 +27,69 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  String text = "Successfully Logged in";
   FToast? fToast;
+  bool loggedIn = false;
+  final storage = new FlutterSecureStorage();
   final email = TextEditingController();
   final password = TextEditingController();
+
+  Future<void> login(String email, String password) async {
+    try {
+      Response response = await post(
+          Uri.parse("https://hostingsyp.up.railway.app/api/users/login"),
+          body: jsonEncode({"email": email, "password": password}),
+          headers: {"Content-Type": "application/json"});
+
+      var one = json.decode(response.body);
+      if (response.statusCode == 200) {
+        if (one["success"] == 1) {
+          _showToast(one["message"], gravity: ToastGravity.TOP);
+          print(one["token"]);
+          final storage = new FlutterSecureStorage();
+          await storage.write(key: "token", value: one["token"]);
+          setState(() {
+            loggedIn = true;
+          });
+          setState(() {
+            text = "Login Successfull";
+          });
+          await Future.delayed(Duration(seconds: 1));
+          setState(() {
+            text = "Fetching data....";
+          });
+          await Future.delayed(Duration(seconds: 3));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => HomePage()));
+          await Future.delayed(Duration(seconds: 2));
+          setState(() {
+            loggedIn = false;
+          });
+          setState(() {
+            text = "Fetching data....";
+          });
+        }
+        if (one["success"] == 0) {
+          _showToast(one['data']);
+        }
+      }
+    }
+
+    // if (response.statusCode == 200) {
+    //   Map<String, dynamic> output = json.decode(response.body);
+    //   if (output["success"] == 0) {
+    //     _showToast(output["message"]);
+    //   }
+    //   if (output["success"] == 1) {
+    //     _showToast(output["message"]);
+    //   }
+    // }
+    catch (e) {
+      print(e);
+      _showToast("Server Issue");
+    }
+  }
+
   void initState() {
     // name.addListener(() { })
     super.initState();
@@ -43,6 +109,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   void _validation(BuildContext context) {
     if (_formKey.currentState!.validate()) {
+      login(email.text, password.text);
       // Navigator.pushReplacement(
       //   context,
       //   MaterialPageRoute(
@@ -51,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  _showToast(String message) {
+  _showToast(String message, {ToastGravity gravity = ToastGravity.BOTTOM}) {
     Widget toast = Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15.0),
       decoration: BoxDecoration(
@@ -82,61 +149,74 @@ class _LoginPageState extends State<LoginPage> {
     );
     fToast?.showToast(
         child: toast,
-        gravity: ToastGravity.BOTTOM,
+        gravity: gravity,
         fadeDuration: Duration(seconds: 0),
         toastDuration: Duration(seconds: 1));
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      // backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Container(
-          constraints: BoxConstraints.expand(),
-          // padding: const EdgeInsets.all(20.0),
-          child: Column(
-            // verticalDirection: VerticalDirection.up,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return loggedIn
+        ? Scaffold(
+            body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            // ignore: prefer_const_literals_to_create_immutables
-            children: <Widget>[
-              HeadingContext(),
-              Container(
-                // padding: EdgeInsets.all(30),
-                child: Column(
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    "Login"
-                        .text
-                        .color(Theme.of(context).colorScheme.onSecondary)
-                        .bold
-                        .xl5
-                        .make(),
-                    "Please Sign in to Continue"
-                        .text
-                        .textStyle(context.captionStyle)
-                        .lg
-                        .make(),
-                  ],
-                ),
+            children: [
+              Center(child: CircularProgressIndicator()),
+              SizedBox(
+                height: 10,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Column(
-                  children: [
-                    _form(context),
-                    _lowerContent(context),
-                  ],
-                ),
-              ),
-              BottomContent()
+              Text(text)
             ],
-          ),
-        ),
-      ),
-    );
+          ))
+        : Scaffold(
+            resizeToAvoidBottomInset: true,
+            // backgroundColor: Colors.white,
+            body: SafeArea(
+              child: Container(
+                constraints: BoxConstraints.expand(),
+                // padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  // verticalDirection: VerticalDirection.up,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  // ignore: prefer_const_literals_to_create_immutables
+                  children: <Widget>[
+                    HeadingContext(),
+                    Container(
+                      // padding: EdgeInsets.all(30),
+                      child: Column(
+                        // crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          "Login"
+                              .text
+                              .color(Theme.of(context).colorScheme.onSecondary)
+                              .bold
+                              .xl5
+                              .make(),
+                          "Please Sign in to Continue"
+                              .text
+                              .textStyle(context.captionStyle)
+                              .lg
+                              .make(),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Column(
+                        children: [
+                          _form(context),
+                          _lowerContent(context),
+                        ],
+                      ),
+                    ),
+                    BottomContent()
+                  ],
+                ),
+              ),
+            ),
+          );
   }
 
   Widget _form(BuildContext context) => Form(
@@ -144,6 +224,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             TextFormField(
+                controller: email,
                 validator: (value) {
                   EmailValidation bc = EmailValidation(
                       value: value,
@@ -165,6 +246,7 @@ class _LoginPageState extends State<LoginPage> {
                     iconData: Icons.people_outline_rounded,
                     context: context)),
             TextFormField(
+              controller: password,
               obscureText: LoginPage.obscureText,
               // onTap: () => setState(() => focusedField = false),
               // onTapOutside: (event) => setState(() => focusedField = false),
