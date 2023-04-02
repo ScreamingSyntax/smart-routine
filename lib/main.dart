@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:routine_app/pages/first_page.dart';
 import 'package:routine_app/pages/home_page.dart';
@@ -7,14 +8,20 @@ import 'package:routine_app/pages/login_page.dart';
 import 'package:routine_app/pages/signup_page.dart';
 import 'package:routine_app/routes/my_routes.dart';
 import 'package:routine_app/themes/my_themes.dart';
+import 'package:velocity_x/velocity_x.dart';
 
-void main() async => {
-      WidgetsFlutterBinding.ensureInitialized(),
-      await SystemChrome.setPreferredOrientations(
-        [DeviceOrientation.portraitUp],
-      ),
-      runApp(MyApp()) // To turn off landscape mode
-    };
+FlutterSecureStorage token = FlutterSecureStorage();
+String? tokenSave;
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp],
+  );
+  String? tokenRead = await token.read(key: 'token');
+  tokenSave = tokenRead;
+  print(tokenRead);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -26,7 +33,8 @@ class MyApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       theme: MyThemes.lightTheme(context),
       darkTheme: MyThemes.darkTheme(context),
-      initialRoute: MyRoutes.homePage,
+      initialRoute:
+          tokenSave.isEmptyOrNull ? MyRoutes.firstPage : MyRoutes.homePage,
       routes: {
         MyRoutes.firstPage: (context) => FirstPage(),
         MyRoutes.loginPage: (context) => LoginPage(),

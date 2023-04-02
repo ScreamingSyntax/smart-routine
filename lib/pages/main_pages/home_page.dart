@@ -1,11 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:http/http.dart' as http;
 
-class HomePageMain extends StatelessWidget {
+class HomePageMain extends StatefulWidget {
   HomePageMain({super.key});
+
+  @override
+  State<HomePageMain> createState() => _HomePageMainState();
+}
+
+class _HomePageMainState extends State<HomePageMain> {
+  FlutterSecureStorage token = FlutterSecureStorage();
+  String? tokenSave = null;
+  String tokenRead = "";
+
+  getToken() async {
+    String? tokenRead = await token.read(key: 'token');
+    setState(() {
+      tokenSave = tokenRead;
+    });
+  }
+
+  // getProfile() async {
+  //   final response = await http.get()
+  // }
+  initState() {
+    super.initState();
+    print("Init State Called");
+    getToken();
+  }
+
   final section = [1, 2, 3, 4];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,12 +55,12 @@ class HomePageMain extends StatelessWidget {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            "Hello Sundhya"
+                            "Hello dadad"
                                 .text
                                 .fontWeight(FontWeight.bold)
                                 .size(20)
                                 .make(),
-                            "Good Night!"
+                            "${tokenSave}"
                                 .text
                                 .textStyle(context.captionStyle)
                                 .fontWeight(FontWeight.bold)

@@ -10,6 +10,7 @@ import 'package:http/http.dart';
 import 'package:routine_app/pages/home_page.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../controllers/auth_controller.dart';
 import '../routes/my_routes.dart';
 import '../styles/text_form_field.dart';
 import '../validation/my_validations.dart';
@@ -27,6 +28,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  // AuthController authController = AuthController();
   String text = "Successfully Logged in";
   FToast? fToast;
   bool loggedIn = false;
@@ -45,7 +47,6 @@ class _LoginPageState extends State<LoginPage> {
       if (response.statusCode == 200) {
         if (one["success"] == 1) {
           _showToast(one["message"], gravity: ToastGravity.TOP);
-          print(one["token"]);
           final storage = new FlutterSecureStorage();
           await storage.write(key: "token", value: one["token"]);
           setState(() {
@@ -110,6 +111,8 @@ class _LoginPageState extends State<LoginPage> {
   void _validation(BuildContext context) {
     if (_formKey.currentState!.validate()) {
       login(email.text, password.text);
+      // authController.loginUser(email.text, password.text, context);
+
       // Navigator.pushReplacement(
       //   context,
       //   MaterialPageRoute(
@@ -311,7 +314,9 @@ class _LoginPageState extends State<LoginPage> {
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ElevatedButton(
-            onPressed: () => _validation(context),
+            onPressed: () {
+              return _validation(context);
+            },
             style: ButtonStyle(
               fixedSize: MaterialStateProperty.all(
                 Size(

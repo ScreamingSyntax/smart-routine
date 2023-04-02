@@ -2,6 +2,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:routine_app/controllers/auth_controller.dart';
 import 'package:routine_app/pages/main_pages/home_page.dart';
 import 'package:routine_app/pages/main_pages/profile_page.dart';
 import 'package:routine_app/pages/main_pages/settings_page.dart';
