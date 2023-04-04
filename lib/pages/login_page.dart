@@ -2,12 +2,12 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:routine_app/pages/home_page.dart';
+import 'package:routine_app/pages/signup_page.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../controllers/auth_controller.dart';
@@ -30,20 +30,23 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   // AuthController authController = AuthController();
   String text = "Successfully Logged in";
-  FToast? fToast;
+  bool pressedOn = false;
+  FToast? fToast = FToast();
   bool loggedIn = false;
   final storage = new FlutterSecureStorage();
   final email = TextEditingController();
   final password = TextEditingController();
-
+  bool netWorkAction = false;
   Future<void> login(String email, String password) async {
     try {
       Response response = await post(
-          Uri.parse("https://hostingsyp.up.railway.app/api/users/login"),
+          Uri.parse(
+              "https://aaryansyproutineapplication.azurewebsites.net/api/users/login"),
           body: jsonEncode({"email": email, "password": password}),
           headers: {"Content-Type": "application/json"});
 
       var one = json.decode(response.body);
+      await storage.write(key: 'email', value: one["email"]);
       if (response.statusCode == 200) {
         if (one["success"] == 1) {
           _showToast(one["message"], gravity: ToastGravity.TOP);
@@ -60,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
             text = "Fetching data....";
           });
           await Future.delayed(Duration(seconds: 3));
-          Navigator.push(
+          Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomePage()));
           await Future.delayed(Duration(seconds: 2));
           setState(() {
@@ -71,6 +74,13 @@ class _LoginPageState extends State<LoginPage> {
           });
         }
         if (one["success"] == 0) {
+          setState(() {
+            netWorkAction = true;
+          });
+          await Future.delayed(Duration(seconds: 2));
+          setState(() {
+            netWorkAction = false;
+          });
           _showToast(one['data']);
         }
       }
@@ -94,21 +104,20 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // name.addListener(() { })
     super.initState();
-    fToast = FToast();
     fToast!.init(context);
   }
 
-  @override
-  void dispose() {
-    email.dispose();
-    password.dispose();
-    super.dispose();
-  }
+  // void dispose() {
+  //   email.dispose();
+  //   password.dispose();
+  //   super.dispose();
+  // }
 
   late String? _onchanged = "";
   var focusedField = true;
   final _formKey = GlobalKey<FormState>();
-  void _validation(BuildContext context) {
+  void _validation(BuildContext context) async {
+    await Future.delayed(Duration(seconds: 1));
     if (_formKey.currentState!.validate()) {
       login(email.text, password.text);
       // authController.loginUser(email.text, password.text, context);
@@ -121,7 +130,8 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  _showToast(String message, {ToastGravity gravity = ToastGravity.BOTTOM}) {
+  _showToast(String message,
+      {ToastGravity gravity = ToastGravity.BOTTOM}) async {
     Widget toast = Container(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15.0),
       decoration: BoxDecoration(
@@ -150,76 +160,93 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
-    fToast?.showToast(
+
+    await Future.delayed(Duration(seconds: 1));
+    fToast!.showToast(
         child: toast,
         gravity: gravity,
         fadeDuration: Duration(seconds: 0),
-        toastDuration: Duration(seconds: 1));
+        toastDuration: Duration(seconds: 2));
+  }
+
+  Widget circularMessage(String message) {
+    return Material(
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [Text(message), Text(""), CircularProgressIndicator()],
+    ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return loggedIn
-        ? Scaffold(
-            body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Center(child: CircularProgressIndicator()),
-              SizedBox(
-                height: 10,
-              ),
-              Text(text)
-            ],
-          ))
-        : Scaffold(
-            resizeToAvoidBottomInset: true,
-            // backgroundColor: Colors.white,
-            body: SafeArea(
-              child: Container(
-                constraints: BoxConstraints.expand(),
-                // padding: const EdgeInsets.all(20.0),
-                child: Column(
-                  // verticalDirection: VerticalDirection.up,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  // ignore: prefer_const_literals_to_create_immutables
-                  children: <Widget>[
-                    HeadingContext(),
-                    Container(
-                      // padding: EdgeInsets.all(30),
-                      child: Column(
-                        // crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          "Login"
-                              .text
-                              .color(Theme.of(context).colorScheme.onSecondary)
-                              .bold
-                              .xl5
-                              .make(),
-                          "Please Sign in to Continue"
-                              .text
-                              .textStyle(context.captionStyle)
-                              .lg
-                              .make(),
-                        ],
+    return pressedOn == true
+        ? circularMessage("Validating Entered Details Please Wait")
+        : netWorkAction == true
+            ? circularMessage("Verifying your details")
+            : loggedIn
+                ? Scaffold(
+                    body: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Center(child: CircularProgressIndicator()),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(text)
+                    ],
+                  ))
+                : Scaffold(
+                    resizeToAvoidBottomInset: true,
+                    // backgroundColor: Colors.white,
+                    body: SafeArea(
+                      child: Container(
+                        constraints: BoxConstraints.expand(),
+                        // padding: const EdgeInsets.all(20.0),
+                        child: Column(
+                          // verticalDirection: VerticalDirection.up,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          // ignore: prefer_const_literals_to_create_immutables
+                          children: <Widget>[
+                            HeadingContext(),
+                            Container(
+                              // padding: EdgeInsets.all(30),
+                              child: Column(
+                                // crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  "Login"
+                                      .text
+                                      .color(Theme.of(context)
+                                          .colorScheme
+                                          .onSecondary)
+                                      .bold
+                                      .xl5
+                                      .make(),
+                                  "Please Sign in to Continue"
+                                      .text
+                                      .textStyle(context.captionStyle)
+                                      .lg
+                                      .make(),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 40),
+                              child: Column(
+                                children: [
+                                  _form(context),
+                                  _lowerContent(context),
+                                ],
+                              ),
+                            ),
+                            BottomContent()
+                          ],
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40),
-                      child: Column(
-                        children: [
-                          _form(context),
-                          _lowerContent(context),
-                        ],
-                      ),
-                    ),
-                    BottomContent()
-                  ],
-                ),
-              ),
-            ),
-          );
+                  );
   }
 
   Widget _form(BuildContext context) => Form(
@@ -236,11 +263,13 @@ class _LoginPageState extends State<LoginPage> {
                       maxLength: 50);
                   String? error = bc.empty();
                   if (error != null) {
-                    return _showToast(error);
+                    _showToast(error);
+                    return "";
                   }
                   error = bc.domainValidation();
                   if (error != null) {
-                    return _showToast(error);
+                    _showToast(error);
+                    return "";
                   }
                   return null;
                 },
@@ -262,11 +291,13 @@ class _LoginPageState extends State<LoginPage> {
                 );
                 String? error = ac.empty();
                 if (error != null) {
-                  return _showToast(error);
+                  _showToast(error);
+                  return "";
                 }
                 error = ac.length();
                 if (error != null) {
-                  return _showToast(error);
+                  _showToast(error);
+                  return "";
                 }
                 return null;
               },
@@ -314,7 +345,14 @@ class _LoginPageState extends State<LoginPage> {
         // crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
+              setState(() {
+                pressedOn = true;
+              });
+              await Future.delayed(Duration(seconds: 1));
+              setState(() {
+                pressedOn = false;
+              });
               return _validation(context);
             },
             style: ButtonStyle(
@@ -355,7 +393,8 @@ class _LoginPageState extends State<LoginPage> {
                   .color(Theme.of(context).colorScheme.primary)
                   .make()
                   .onTap(() {
-                Navigator.pushNamed(context, MyRoutes.signUpPage);
+                Navigator.push((context),
+                    MaterialPageRoute(builder: (context) => SignUpPage()));
               })
             ],
           ),

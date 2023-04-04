@@ -37,8 +37,6 @@ class MyApp extends StatelessWidget {
           tokenSave.isEmptyOrNull ? MyRoutes.firstPage : MyRoutes.homePage,
       routes: {
         MyRoutes.firstPage: (context) => FirstPage(),
-        MyRoutes.loginPage: (context) => LoginPage(),
-        MyRoutes.signUpPage: (context) => const SignUpPage(),
         MyRoutes.homePage: (context) => HomePage()
       },
     );

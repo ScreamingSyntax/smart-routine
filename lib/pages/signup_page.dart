@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:routine_app/widgets/login&signup/login_signup.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../routes/my_routes.dart';
@@ -23,6 +22,9 @@ class _SignUpPageState extends State<SignUpPage> {
   String password2 = "";
 
   FToast? fToast;
+  bool onNetwork = false;
+  bool onPressed = false;
+  bool redirect = false;
 
   final name = TextEditingController();
   final email = TextEditingController();
@@ -36,13 +38,12 @@ class _SignUpPageState extends State<SignUpPage> {
     fToast!.init(context);
   }
 
-  @override
-  void dispose() {
-    name.dispose();
-    email.dispose();
-    password.dispose();
-    super.dispose();
-  }
+  // void dispose() {
+  //   name.dispose();
+  //   email.dispose();
+  //   password.dispose();
+  //   super.dispose();
+  // }
 
   Future<bool> signUp(String name, String email, String password) async {
     print(name);
@@ -50,7 +51,8 @@ class _SignUpPageState extends State<SignUpPage> {
     print(password);
     try {
       Response response = await post(
-          Uri.parse("https://hostingsyp.up.railway.app/api/users/"),
+          Uri.parse(
+              "https://aaryansyproutineapplication.azurewebsites.net/api/users/"),
           headers: {"Content-Type": "application/json"},
           body:
               jsonEncode({"name": name, "email": email, "password": password}));
@@ -64,6 +66,7 @@ class _SignUpPageState extends State<SignUpPage> {
         _showToast("Failed To create an Account");
       }
     } catch (e) {
+      print(e);
       _showToast("Server Issue");
     }
     return false;
@@ -71,12 +74,15 @@ class _SignUpPageState extends State<SignUpPage> {
 
   final _formKey = GlobalKey<FormState>();
   void _validation(BuildContext context) async {
+    await Future.delayed(Duration(seconds: 1));
     if (_formKey.currentState!.validate()) {
       // Navigator.pushReplacement(
       //     context, MaterialPageRoute(builder: (context) => LoginPage()));
       bool check = await signUp(name.text, email.text, password.text);
       if (check) {
-        await Future.delayed(Duration(seconds: 2));
+        setState(() {
+          redirect = true;
+        });
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => LoginPage()));
       }
@@ -121,62 +127,64 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: Container(
-          // padding: const EdgeInsets.all(20.0),
-          constraints: const BoxConstraints.expand(),
-          child: Column(
-            // verticalDirection: VerticalDirection.up,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            // ignore: prefer_const_literals_to_create_immutables
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 50,
-                ),
+    return onPressed
+        ? CircularProgressIndicator()
+        : Scaffold(
+            resizeToAvoidBottomInset: true,
+            body: SafeArea(
+              child: Container(
+                // padding: const EdgeInsets.all(20.0),
+                constraints: const BoxConstraints.expand(),
                 child: Column(
-                  children: [
-                    "Sign Up"
-                        .text
-                        .color(Theme.of(context).colorScheme.onSecondary)
-                        .bold
-                        .xl5
-                        .make(),
-                    "Please Enter Valid Credentials"
-                        .text
-                        .textStyle(context.captionStyle)
-                        .lg
-                        .make(),
+                  // verticalDirection: VerticalDirection.up,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  // ignore: prefer_const_literals_to_create_immutables
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 50,
+                      ),
+                      child: Column(
+                        children: [
+                          "Sign Up"
+                              .text
+                              .color(Theme.of(context).colorScheme.onSecondary)
+                              .bold
+                              .xl5
+                              .make(),
+                          "Please Enter Valid Credentials"
+                              .text
+                              .textStyle(context.captionStyle)
+                              .lg
+                              .make(),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30.0, vertical: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _textFields(context),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: _lowerPage(context),
+                    ),
+                    // const BottomContent()
                   ],
                 ),
               ),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _textFields(context),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: _lowerPage(context),
-              ),
-              // const BottomContent()
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   Widget _textFields(BuildContext context) => Form(
@@ -193,15 +201,18 @@ class _SignUpPageState extends State<SignUpPage> {
                     maxLength: 10);
                 String? error = ac.empty();
                 if (error != null) {
-                  return _showToast(error);
+                  _showToast(error);
+                  return " ";
                 }
                 error = ac.specialCharacters();
                 if (error != null) {
-                  return _showToast(error);
+                  _showToast(error);
+                  return " ";
                 }
                 error = ac.fullNameValidation();
                 if (error != null) {
-                  return _showToast(error);
+                  _showToast(error);
+                  return " ";
                 }
                 return null;
               },
@@ -220,11 +231,13 @@ class _SignUpPageState extends State<SignUpPage> {
                     maxLength: 50);
                 String? error = ac.empty();
                 if (error != null) {
-                  return _showToast(error);
+                  _showToast(error);
+                  return " ";
                 }
                 error = ac.domainValidation();
                 if (error != null) {
-                  return _showToast(error);
+                  _showToast(error);
+                  return " ";
                 }
                 return null;
               },
@@ -248,19 +261,23 @@ class _SignUpPageState extends State<SignUpPage> {
                   );
                   String? error = ac.empty();
                   if (error != null) {
-                    return _showToast(error);
+                    _showToast(error);
+                    return " ";
                   }
                   error = ac.length();
                   if (error != null) {
-                    return _showToast(error);
+                    _showToast(error);
+                    return " ";
                   }
                   error = ac.passwordSecurity();
                   if (error != null) {
-                    return _showToast(error);
+                    _showToast(error);
+                    return " ";
                   }
                   if (password2 != value) {
-                    return _showToast(
-                        "${ac.validationType} Field do not match");
+                    _showToast("${ac.validationType} Field do not match");
+
+                    return " ";
                   }
                   return null;
                 },
@@ -315,8 +332,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     validationType: "Password",
                     minLength: 7,
                     maxLength: 20);
-                if (password1.toString() != value) {
+                print(password.toString());
+                if (password.text != password2) {
                   _showToast("${ac.validationType} Field do not match");
+                  return " ";
                 }
                 return null;
               },
@@ -365,7 +384,18 @@ class _SignUpPageState extends State<SignUpPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             ElevatedButton(
-              onPressed: () => _validation(context),
+              onPressed: () async {
+                setState(() {
+                  onPressed = true;
+                });
+                await Future.delayed(Duration(seconds: 2));
+                setState(() {
+                  onPressed = false;
+                });
+                print(password.text);
+                print(password2.toString());
+                return _validation(context);
+              },
               style: ButtonStyle(
                 fixedSize: MaterialStateProperty.all(
                   Size(
@@ -405,7 +435,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     .color(Theme.of(context).colorScheme.primary)
                     .make()
                     .onTap(() {
-                  Navigator.pushNamed(context, MyRoutes.loginPage);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginPage()));
                 })
               ],
             ),

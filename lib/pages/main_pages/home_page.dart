@@ -1,3 +1,7 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
@@ -16,7 +20,10 @@ class _HomePageMainState extends State<HomePageMain> {
   FlutterSecureStorage token = FlutterSecureStorage();
   String? tokenSave = null;
   String tokenRead = "";
-
+  String userName = "";
+  String? userEmail = null;
+  int userID = 0;
+  var firstName = "";
   getToken() async {
     String? tokenRead = await token.read(key: 'token');
     setState(() {
@@ -24,13 +31,49 @@ class _HomePageMainState extends State<HomePageMain> {
     });
   }
 
-  // getProfile() async {
-  //   final response = await http.get()
-  // }
+  splitNames() {
+    List<String> firstNameSplit = userName.split(" ");
+    return firstNameSplit[0];
+  }
+
+  getProfile() async {
+    Completer barrier = Completer();
+    userEmail = await token.read(key: 'email');
+    print(userEmail);
+    final response = await http.get(
+      Uri.parse(
+          'https://aaryansyproutineapplication.azurewebsites.net/api/users/${userEmail}'),
+      // Send authorization headers to the backend.
+      headers: {
+        'Authorization': 'Barear ${await token.read(key: 'token') as String}'
+      },
+    );
+
+    if (response.statusCode == 200) {
+      var json = jsonDecode(response.body);
+      if (json["success"] == 1) {
+        setState(() {
+          userName = json["message"][0]["name"];
+          userID = json["message"][0]["id"];
+          print(userID);
+        });
+      }
+      print(userID);
+      print(userName);
+      token.write(key: "id", value: userID.toString());
+      token.write(key: "username", value: userName);
+    }
+
+    // setState(() {});
+    // print(token.read(key: 'email') as String);
+    // final responseJson = jsonDecode(response.body);
+  }
+
   initState() {
     super.initState();
     print("Init State Called");
     getToken();
+    getProfile();
   }
 
   final section = [1, 2, 3, 4];
@@ -55,12 +98,12 @@ class _HomePageMainState extends State<HomePageMain> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            "Hello dadad"
+                            "Hello "
                                 .text
                                 .fontWeight(FontWeight.bold)
                                 .size(20)
                                 .make(),
-                            "${tokenSave}"
+                            "${splitNames()}"
                                 .text
                                 .textStyle(context.captionStyle)
                                 .fontWeight(FontWeight.bold)
