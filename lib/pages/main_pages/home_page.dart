@@ -1,10 +1,6 @@
-import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
@@ -24,55 +20,58 @@ class _HomePageMainState extends State<HomePageMain> {
   String? userEmail = null;
   int userID = 0;
   var firstName = "";
+
+  String? userNameKey = "";
   getToken() async {
+    print("User Name key" + userNameKey!);
     String? tokenRead = await token.read(key: 'token');
     setState(() {
       tokenSave = tokenRead;
     });
   }
 
-  splitNames() {
-    List<String> firstNameSplit = userName.split(" ");
-    return firstNameSplit[0];
+  splitNames() async {
+    userNameKey = await token.read(key: 'username');
+    // List<String> firstNameSplit = userNameKey!.split(" ");
+    // return firstNameSplit[0];
+    // print(userNameKey! + "AAA");
+    setState(() {});
   }
 
   getProfile() async {
-    Completer barrier = Completer();
-    userEmail = await token.read(key: 'email');
-    print(userEmail);
-    final response = await http.get(
-      Uri.parse(
-          'https://aaryansyproutineapplication.azurewebsites.net/api/users/${userEmail}'),
-      // Send authorization headers to the backend.
-      headers: {
-        'Authorization': 'Barear ${await token.read(key: 'token') as String}'
-      },
-    );
-
-    if (response.statusCode == 200) {
-      var json = jsonDecode(response.body);
-      if (json["success"] == 1) {
-        setState(() {
+    if (userName == "") {
+      userEmail = await token.read(key: 'email');
+      print(userEmail);
+      final response = await http.get(
+        Uri.parse(
+            'https://aaryansyproutineapplication.azurewebsites.net/api/users/${userEmail}'),
+        // Send authorization headers to the backend.
+        headers: {
+          'Authorization': 'Barear ${await token.read(key: 'token') as String}'
+        },
+      );
+      if (response.statusCode == 200) {
+        var json = jsonDecode(response.body);
+        if (json["success"] == 1) {
           userName = json["message"][0]["name"];
           userID = json["message"][0]["id"];
           print(userID);
-        });
+        }
+        await token.write(key: "id", value: userID.toString());
+        await token.write(key: "username", value: userName);
       }
-      print(userID);
-      print(userName);
-      token.write(key: "id", value: userID.toString());
-      token.write(key: "username", value: userName);
-    }
 
-    // setState(() {});
-    // print(token.read(key: 'email') as String);
-    // final responseJson = jsonDecode(response.body);
+      // setState(() {});
+      // print(token.read(key: 'email') as String);
+      // final responseJson = jsonDecode(response.body);
+    }
   }
 
   initState() {
     super.initState();
     print("Init State Called");
     getToken();
+    splitNames();
     getProfile();
   }
 
@@ -103,7 +102,7 @@ class _HomePageMainState extends State<HomePageMain> {
                                 .fontWeight(FontWeight.bold)
                                 .size(20)
                                 .make(),
-                            "${splitNames()}"
+                            "${userNameKey}"
                                 .text
                                 .textStyle(context.captionStyle)
                                 .fontWeight(FontWeight.bold)

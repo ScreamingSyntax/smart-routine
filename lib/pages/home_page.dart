@@ -6,6 +6,7 @@ import 'package:routine_app/controllers/auth_controller.dart';
 import 'package:routine_app/pages/main_pages/home_page.dart';
 import 'package:routine_app/pages/main_pages/profile_page.dart';
 import 'package:routine_app/pages/main_pages/settings_page.dart';
+import 'package:routine_app/widgets/PopScope.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -41,20 +42,23 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: screens[index],
-      extendBody: true,
-      backgroundColor: Colors.transparent,
-      bottomNavigationBar: CurvedNavigationBar(
-        color: Colors.white,
-        key: _navigationKey,
+    return WillPopScope(
+      onWillPop: () => showExitPopup(context),
+      child: Scaffold(
+        body: screens[index],
+        extendBody: true,
         backgroundColor: Colors.transparent,
-        buttonBackgroundColor: Colors.white,
-        height: 60,
-        items: items,
-        animationCurve: Curves.easeInOutQuint,
-        index: index,
-        onTap: (index) => {this.index = index, setState(() => {})},
+        bottomNavigationBar: CurvedNavigationBar(
+          color: Colors.white,
+          key: _navigationKey,
+          backgroundColor: Colors.transparent,
+          buttonBackgroundColor: Colors.white,
+          height: 60,
+          items: items,
+          animationCurve: Curves.easeInOutQuint,
+          index: index,
+          onTap: (index) => {this.index = index, setState(() => {})},
+        ),
       ),
     );
   }
