@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:routine_app/controllers/auth_controller.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../routes/my_routes.dart';
@@ -17,6 +18,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
+  AuthController ac = AuthController();
   String password1 = "";
 
   String password2 = "";
@@ -45,40 +47,40 @@ class _SignUpPageState extends State<SignUpPage> {
   //   super.dispose();
   // }
 
-  Future<bool> signUp(String name, String email, String password) async {
-    print(name);
-    print(email);
-    print(password);
-    try {
-      Response response = await post(
-          Uri.parse(
-              "https://aaryansyproutineapplication.azurewebsites.net/api/users/"),
-          headers: {"Content-Type": "application/json"},
-          body:
-              jsonEncode({"name": name, "email": email, "password": password}));
-      if (response.statusCode == 200) {
-        _showToast("Account Created Successfully");
-        return true;
-      }
-      if (response.statusCode == 500) {
-        _showToast("Email Already Exists");
-      } else {
-        _showToast("Failed To create an Account");
-      }
-    } catch (e) {
-      print(e);
-      _showToast("Server Issue");
-    }
-    return false;
-  }
+  // Future<bool> signUp(String name, String email, String password) async {
+  //   print(name);
+  //   print(email);
+  //   print(password);
+  //   try {
+  //     Response response = await post(
+  //         Uri.parse(
+  //             "https://aaryansyproutineapplication.azurewebsites.net/api/users/"),
+  //         headers: {"Content-Type": "application/json"},
+  //         body:
+  //             jsonEncode({"name": name, "email": email, "password": password}));
+  //     if (response.statusCode == 200) {
+  //       print("Account Created Successfully");
+  //       return true;
+  //     }
+  //     if (response.statusCode == 500) {
+  //       _print("Email Already Exists");
+  //     } else {
+  //       _print("Failed To create an Account");
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     _print("Server Issue");
+  //   }
+  //   return false;
+  // }
 
   final _formKey = GlobalKey<FormState>();
   void _validation(BuildContext context) async {
-    // await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(Duration(seconds: 1));
     if (_formKey.currentState!.validate()) {
       // Navigator.pushReplacement(
       //     context, MaterialPageRoute(builder: (context) => LoginPage()));
-      bool check = await signUp(name.text, email.text, password.text);
+      bool check = await ac.signUp(name.text, email.text, password.text);
       if (check) {
         setState(() {
           redirect = true;
@@ -87,42 +89,6 @@ class _SignUpPageState extends State<SignUpPage> {
             context, MaterialPageRoute(builder: (context) => LoginPage()));
       }
     }
-  }
-
-  _showToast(String message) {
-    Widget toast = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          10.0,
-        ),
-        // border: Border.all(color: Colors.blue),
-        color: Colors.black54,
-      ),
-      child: Row(
-        // mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            color: Colors.white,
-          ),
-          SizedBox(
-            width: 12.0,
-          ),
-          Text(
-            message,
-            style: TextStyle(
-                color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500),
-          ),
-        ],
-      ),
-    );
-    fToast?.showToast(
-        child: toast,
-        gravity: ToastGravity.BOTTOM,
-        fadeDuration: Duration(seconds: 0),
-        toastDuration: Duration(seconds: 1));
   }
 
   @override
@@ -201,17 +167,17 @@ class _SignUpPageState extends State<SignUpPage> {
                     maxLength: 10);
                 String? error = ac.empty();
                 if (error != null) {
-                  _showToast(error);
+                  print(error);
                   return " ";
                 }
                 error = ac.specialCharacters();
                 if (error != null) {
-                  _showToast(error);
+                  print(error);
                   return " ";
                 }
                 error = ac.fullNameValidation();
                 if (error != null) {
-                  _showToast(error);
+                  print(error);
                   return " ";
                 }
                 return null;
@@ -231,12 +197,12 @@ class _SignUpPageState extends State<SignUpPage> {
                     maxLength: 50);
                 String? error = ac.empty();
                 if (error != null) {
-                  _showToast(error);
+                  print(error);
                   return " ";
                 }
                 error = ac.domainValidation();
                 if (error != null) {
-                  _showToast(error);
+                  print(error);
                   return " ";
                 }
                 return null;
@@ -261,21 +227,21 @@ class _SignUpPageState extends State<SignUpPage> {
                   );
                   String? error = ac.empty();
                   if (error != null) {
-                    _showToast(error);
+                    print(error);
                     return " ";
                   }
                   error = ac.length();
                   if (error != null) {
-                    _showToast(error);
+                    print(error);
                     return " ";
                   }
                   error = ac.passwordSecurity();
                   if (error != null) {
-                    _showToast(error);
+                    print(error);
                     return " ";
                   }
                   if (password2 != value) {
-                    _showToast("${ac.validationType} Field do not match");
+                    print("${ac.validationType} Field do not match");
 
                     return " ";
                   }
@@ -334,7 +300,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     maxLength: 20);
                 print(password.toString());
                 if (password.text != password2) {
-                  _showToast("${ac.validationType} Field do not match");
+                  print("${ac.validationType} Field do not match");
                   return " ";
                 }
                 return null;
@@ -388,7 +354,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 setState(() {
                   onPressed = true;
                 });
-                // await Future.delayed(Duration(seconds: 2));/
+                await Future.delayed(Duration(seconds: 2));
                 setState(() {
                   onPressed = false;
                 });

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:routine_app/controllers/local_storage.dart';
+import 'package:routine_app/models/user.dart';
 import 'package:routine_app/routes/my_routes.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -12,7 +14,8 @@ class ProfilePageeMain extends StatefulWidget {
 }
 
 class _ProfilePageeMainState extends State<ProfilePageeMain> {
-  FlutterSecureStorage storage = FlutterSecureStorage();
+  // FlutterSecureStorage storage = FlutterSecureStorage();
+  LocalStorage storage = LocalStorage();
   bool pressedId = true;
   bool pressedName = true;
   bool pressedEmail = true;
@@ -21,10 +24,9 @@ class _ProfilePageeMainState extends State<ProfilePageeMain> {
   String? userEmail = "";
 
   getDatas(BuildContext context) async {
-    userEmail = await storage.read(key: 'email');
-    userName = await storage.read(key: 'username');
-    String? user = await storage.read(key: 'id');
-    userID = int.parse(user!);
+    userEmail = UserDetail.details[0].email;
+    userName = UserDetail.details[0].name;
+    userID = UserDetail.details[0].id;
     setState(() {});
   }
 

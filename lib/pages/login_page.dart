@@ -28,89 +28,59 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  // AuthController authController = AuthController();
+  AuthController authController = AuthController();
   String text = "Successfully Logged in";
-  bool pressedOn = false;
-  FToast? fToast = FToast();
-  bool loggedIn = false;
-  final storage = new FlutterSecureStorage();
+  // bool pressedOn = false;
+  // bool loggedIn = false;
+  // final storage = new FlutterSecureStorage();
   final email = TextEditingController();
   final password = TextEditingController();
   bool netWorkAction = false;
-  Future<void> login(String email, String password) async {
-    try {
-      Response response = await post(
-          Uri.parse(
-              "https://aaryansyproutineapplication.azurewebsites.net/api/users/login"),
-          body: jsonEncode({"email": email, "password": password}),
-          headers: {"Content-Type": "application/json"});
+  // Future<void> login(String email, String password) async {
+  //   try {
+  //     Response response = await post(
+  //         Uri.parse(
+  //             "https://aaryansyproutineapplication.azurewebsites.net/api/users/login"),
+  //         body: jsonEncode({"email": email, "password": password}),
+  //         headers: {"Content-Type": "application/json"});
 
-      var one = json.decode(response.body);
-      await storage.write(key: 'email', value: one["email"]);
-      if (response.statusCode == 200) {
-        if (one["success"] == 1) {
-          _showToast(one["message"], gravity: ToastGravity.TOP);
-          final storage = new FlutterSecureStorage();
-          await storage.write(key: "token", value: one["token"]);
-          setState(() {
-            loggedIn = true;
-          });
-          setState(() {
-            text = "Login Successfull";
-          });
-          // await Future.delayed(Duration(seconds: 1));
-          setState(() {
-            text = "Fetching data....";
-          });
-          // await Future.delayed(Duration(seconds: 3));
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => HomePage()));
-          // await Future.delayed(Duration(seconds: 2));
-          setState(() {
-            loggedIn = false;
-          });
-          setState(() {
-            text = "Fetching data....";
-          });
-        }
-        if (one["success"] == 0) {
-          setState(() {
-            netWorkAction = true;
-          });
-          // await Future.delayed(Duration(seconds: 2));
-          setState(() {
-            netWorkAction = false;
-          });
-          _showToast(one['data']);
-        }
-      }
-    }
-
-    // if (response.statusCode == 200) {
-    //   Map<String, dynamic> output = json.decode(response.body);
-    //   if (output["success"] == 0) {
-    //     _showToast(output["message"]);
-    //   }
-    //   if (output["success"] == 1) {
-    //     _showToast(output["message"]);
-    //   }
-    // }
-    catch (e) {
-      print(e);
-      _showToast("Server Issue");
-    }
-  }
-
-  void initState() {
-    // name.addListener(() { })
-    super.initState();
-    fToast!.init(context);
-  }
-
-  // void dispose() {
-  //   email.dispose();
-  //   password.dispose();
-  //   super.dispose();
+  //     var one = json.decode(response.body);
+  //     await storage.write(key: 'email', value: one["email"]);
+  //     if (response.statusCode == 200) {
+  //       if (one["success"] == 1) {
+  //         print(one["message"]);
+  //         final storage = new FlutterSecureStorage();
+  //         await storage.write(key: "token", value: one["token"]);
+  //         setState(() {
+  //           loggedIn = true;
+  //         });
+  //         setState(() {
+  //           text = "Login Successfull";
+  //         });
+  //         // await Future.delayed(Duration(seconds: 1));
+  //         setState(() {
+  //           text = "Fetching data....";
+  //         });
+  //         // await Future.delayed(Duration(seconds: 3));
+  //         Navigator.pushReplacement(
+  //             context, MaterialPageRoute(builder: (context) => HomePage()));
+  //         // await Future.delayed(Duration(seconds: 2));
+  //       }
+  //       if (one["success"] == 0) {
+  //         setState(() {
+  //           netWorkAction = true;
+  //         });
+  //         // await Future.delayed(Duration(seconds: 2));
+  //         setState(() {
+  //           netWorkAction = false;
+  //         });
+  //         print(one['data']);
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print(e);
+  //     print("Server Issue");
+  //   }
   // }
 
   late String? _onchanged = "";
@@ -119,7 +89,12 @@ class _LoginPageState extends State<LoginPage> {
   void _validation(BuildContext context) async {
     // await Future.delayed(Duration(seconds: 1));
     if (_formKey.currentState!.validate()) {
-      login(email.text, password.text);
+      String message = await authController.login(email.text, password.text);
+      print(message);
+      if (message == "Login Successfully") {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => HomePage()));
+      }
       // authController.loginUser(email.text, password.text, context);
 
       // Navigator.pushReplacement(
@@ -128,38 +103,6 @@ class _LoginPageState extends State<LoginPage> {
       //     builder: (context) => HomePage(),
       //   ),
     }
-  }
-
-  _showToast(String message,
-      {ToastGravity gravity = ToastGravity.BOTTOM}) async {
-    Widget toast = Container(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 15.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          10.0,
-        ),
-        // border: Border.all(color: Colors.blue),
-        color: Colors.black54,
-      ),
-      child: Row(
-        // mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(
-            Icons.error_outline,
-            color: Colors.white,
-          ),
-          SizedBox(
-            width: 12.0,
-          ),
-          Text(
-            message,
-            style: TextStyle(
-                color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget circularMessage(String message) {
@@ -172,74 +115,54 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return pressedOn == true
-        ? circularMessage("Validating Entered Details Please Wait")
-        : netWorkAction == true
-            ? circularMessage("Verifying your details")
-            : loggedIn
-                ? Scaffold(
-                    body: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Center(child: CircularProgressIndicator()),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(text)
-                    ],
-                  ))
-                : Scaffold(
-                    resizeToAvoidBottomInset: true,
-                    // backgroundColor: Colors.white,
-                    body: SafeArea(
-                      child: Container(
-                        constraints: BoxConstraints.expand(),
-                        // padding: const EdgeInsets.all(20.0),
-                        child: Column(
-                          // verticalDirection: VerticalDirection.up,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          // ignore: prefer_const_literals_to_create_immutables
-                          children: <Widget>[
-                            HeadingContext(),
-                            Container(
-                              // padding: EdgeInsets.all(30),
-                              child: Column(
-                                // crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  "Login"
-                                      .text
-                                      .color(Theme.of(context)
-                                          .colorScheme
-                                          .onSecondary)
-                                      .bold
-                                      .xl5
-                                      .make(),
-                                  "Please Sign in to Continue"
-                                      .text
-                                      .textStyle(context.captionStyle)
-                                      .lg
-                                      .make(),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 40),
-                              child: Column(
-                                children: [
-                                  _form(context),
-                                  _lowerContent(context),
-                                ],
-                              ),
-                            ),
-                            BottomContent()
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      // backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Container(
+          constraints: BoxConstraints.expand(),
+          // padding: const EdgeInsets.all(20.0),
+          child: Column(
+            // verticalDirection: VerticalDirection.up,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            // ignore: prefer_const_literals_to_create_immutables
+            children: <Widget>[
+              HeadingContext(),
+              Container(
+                // padding: EdgeInsets.all(30),
+                child: Column(
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    "Login"
+                        .text
+                        .color(Theme.of(context).colorScheme.onSecondary)
+                        .bold
+                        .xl5
+                        .make(),
+                    "Please Sign in to Continue"
+                        .text
+                        .textStyle(context.captionStyle)
+                        .lg
+                        .make(),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Column(
+                  children: [
+                    _form(context),
+                    _lowerContent(context),
+                  ],
+                ),
+              ),
+              BottomContent()
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _form(BuildContext context) => Form(
@@ -256,12 +179,12 @@ class _LoginPageState extends State<LoginPage> {
                       maxLength: 50);
                   String? error = bc.empty();
                   if (error != null) {
-                    _showToast(error);
+                    print(error);
                     return "";
                   }
                   error = bc.domainValidation();
                   if (error != null) {
-                    _showToast(error);
+                    print(error);
                     return "";
                   }
                   return null;
@@ -284,12 +207,14 @@ class _LoginPageState extends State<LoginPage> {
                 );
                 String? error = ac.empty();
                 if (error != null) {
-                  _showToast(error);
+                  // _showToast(error);
+                  print(error);
                   return "";
                 }
                 error = ac.length();
                 if (error != null) {
-                  _showToast(error);
+                  // _showToast(error);
+                  print(error);
                   return "";
                 }
                 return null;
@@ -339,13 +264,6 @@ class _LoginPageState extends State<LoginPage> {
         children: [
           ElevatedButton(
             onPressed: () async {
-              setState(() {
-                pressedOn = true;
-              });
-              // await Future.delayed(Duration(seconds: 1));
-              setState(() {
-                pressedOn = false;
-              });
               return _validation(context);
             },
             style: ButtonStyle(

@@ -2,6 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:routine_app/controllers/auth_controller.dart';
+import 'package:routine_app/controllers/local_storage.dart';
+import 'package:routine_app/controllers/user_controller.dart';
+import 'package:routine_app/models/user.dart';
+import 'package:routine_app/widgets/CircularMessage.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,57 +18,26 @@ class HomePageMain extends StatefulWidget {
 }
 
 class _HomePageMainState extends State<HomePageMain> {
-  FlutterSecureStorage token = FlutterSecureStorage();
+  UserController uc = UserController();
+  LocalStorage ac = LocalStorage();
   String? tokenSave = null;
   String tokenRead = "";
-  String userName = "";
-  String? userEmail = null;
-  int userID = 0;
-  var firstName = "";
-
   String? userNameKey = "aa";
   getToken() async {
     print("User Name key" + userNameKey!);
-    String? tokenRead = await token.read(key: 'token');
+    String? tokenRead = await ac.readFromStorage('token');
     setState(() {
       tokenSave = tokenRead;
     });
-    await getProfile();
-    await splitNames();
-  }
-
-  splitNames() async {
-    userNameKey = await token.read(key: 'username');
-    // return firstNameSplit[0];
-    // print(userNameKey! + "AAA");s
+    await uc.getProfile();
+    // await firstName();
     setState(() {});
   }
 
-  getProfile() async {
-    if (userName == "") {
-      userEmail = await token.read(key: 'email');
-      final response = await http.get(
-        Uri.parse(
-            'https://aaryansyproutineapplication.azurewebsites.net/api/users/${userEmail}'),
-        // Send authorization headers to the backend.
-        headers: {
-          'Authorization': 'Barear ${await token.read(key: 'token') as String}'
-        },
-      );
-      if (response.statusCode == 200) {
-        var json = jsonDecode(response.body);
-        if (json["success"] == 1) {
-          userName = json["message"][0]["name"];
-          userID = json["message"][0]["id"];
-          print(userID);
-        }
-        token.write(key: "id", value: userID.toString());
-        token.write(key: "username", value: userName);
-      }
-
-      // print(token.read(key: 'email') as String);
-      // final responseJson = jsonDecode(response.body);
-    }
+  firstName() {
+    var split = UserDetail.details[0].name.split(" ");
+    // var split = "";
+    return split[0];
   }
 
   initState() {
@@ -76,10 +50,8 @@ class _HomePageMainState extends State<HomePageMain> {
 
   @override
   Widget build(BuildContext context) {
-    return userNameKey == "aa"
-        ? Container(
-            color: Colors.white,
-            child: Center(child: CircularProgressIndicator()))
+    return UserDetail.details.isEmpty
+        ? MyCircularProgressBar(context, "Fetching User Data")
         : Scaffold(
             backgroundColor: Colors.cyan,
             body: SafeArea(
@@ -103,7 +75,7 @@ class _HomePageMainState extends State<HomePageMain> {
                                     .fontWeight(FontWeight.bold)
                                     .size(20)
                                     .make(),
-                                "${userNameKey}"
+                                "${firstName()}"
                                     .text
                                     .textStyle(context.captionStyle)
                                     .fontWeight(FontWeight.bold)
