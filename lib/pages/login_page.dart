@@ -2,18 +2,21 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:routine_app/pages/home_page.dart';
 import 'package:routine_app/pages/signup_page.dart';
+import 'package:routine_app/widgets/dialogBox.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../controllers/auth_controller.dart';
 import '../routes/my_routes.dart';
 import '../styles/text_form_field.dart';
 import '../validation/my_validations.dart';
+import '../widgets/PopScope.dart';
 import '../widgets/login&signup/login_signup.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -90,10 +93,13 @@ class _LoginPageState extends State<LoginPage> {
     // await Future.delayed(Duration(seconds: 1));
     if (_formKey.currentState!.validate()) {
       String message = await authController.login(email.text, password.text);
-      print(message);
+
       if (message == "Login Successfully") {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => HomePage()));
+      } else {
+        showErrorMessage(context,
+            message: message, errorType: "Verification Issue");
       }
       // authController.loginUser(email.text, password.text, context);
 
@@ -179,12 +185,14 @@ class _LoginPageState extends State<LoginPage> {
                       maxLength: 50);
                   String? error = bc.empty();
                   if (error != null) {
-                    print(error);
+                    showErrorMessage(context,
+                        message: error, errorType: "Validation Error");
                     return "";
                   }
                   error = bc.domainValidation();
                   if (error != null) {
-                    print(error);
+                    showErrorMessage(context,
+                        message: error, errorType: "Validation Error");
                     return "";
                   }
                   return null;
@@ -208,13 +216,15 @@ class _LoginPageState extends State<LoginPage> {
                 String? error = ac.empty();
                 if (error != null) {
                   // _showToast(error);
-                  print(error);
+                  showErrorMessage(context,
+                      message: error, errorType: "Validation Error");
                   return "";
                 }
                 error = ac.length();
                 if (error != null) {
                   // _showToast(error);
-                  print(error);
+                  showErrorMessage(context,
+                      message: error, errorType: "Validation Error");
                   return "";
                 }
                 return null;

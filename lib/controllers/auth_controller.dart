@@ -24,8 +24,10 @@
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:routine_app/controllers/local_storage.dart';
+import 'package:routine_app/widgets/dialogBox.dart';
 
 class AuthController {
   LocalStorage storage = LocalStorage();
@@ -61,7 +63,8 @@ class AuthController {
     }
   }
 
-  Future<bool> signUp(String name, String email, String password) async {
+  Future<bool> signUp(
+      BuildContext context, String name, String email, String password) async {
     print(name);
     print(email);
     print(password);
@@ -77,12 +80,18 @@ class AuthController {
         return true;
       }
       if (response.statusCode == 500) {
+        showErrorMessage(context,
+            message: "Email Already Exists", errorType: "Verification Issue");
         print("Email Already Exists");
       } else {
+        showErrorMessage(context,
+            message: "Failed To create an Account", errorType: "Verification");
         print("Failed To create an Account");
       }
     } catch (e) {
       print(e);
+      showErrorMessage(context,
+          message: "Server Issue", errorType: "Verification");
       print("Server Issue");
     }
     return false;

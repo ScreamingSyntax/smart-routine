@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:routine_app/controllers/auth_controller.dart';
+import 'package:routine_app/widgets/dialogBox.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../routes/my_routes.dart';
@@ -76,11 +77,12 @@ class _SignUpPageState extends State<SignUpPage> {
 
   final _formKey = GlobalKey<FormState>();
   void _validation(BuildContext context) async {
-    await Future.delayed(Duration(seconds: 1));
+    // await Future.delayed(Duration(seconds: 1));
     if (_formKey.currentState!.validate()) {
       // Navigator.pushReplacement(
       //     context, MaterialPageRoute(builder: (context) => LoginPage()));
-      bool check = await ac.signUp(name.text, email.text, password.text);
+      bool check =
+          await ac.signUp(context, name.text, email.text, password.text);
       if (check) {
         setState(() {
           redirect = true;
@@ -167,17 +169,20 @@ class _SignUpPageState extends State<SignUpPage> {
                     maxLength: 10);
                 String? error = ac.empty();
                 if (error != null) {
-                  print(error);
+                  showErrorMessage(context,
+                      message: error, errorType: "Validation Error");
                   return " ";
                 }
                 error = ac.specialCharacters();
                 if (error != null) {
-                  print(error);
+                  showErrorMessage(context,
+                      message: error, errorType: "Validation Error");
                   return " ";
                 }
                 error = ac.fullNameValidation();
                 if (error != null) {
-                  print(error);
+                  showErrorMessage(context,
+                      message: error, errorType: "Validation Error");
                   return " ";
                 }
                 return null;
@@ -197,12 +202,14 @@ class _SignUpPageState extends State<SignUpPage> {
                     maxLength: 50);
                 String? error = ac.empty();
                 if (error != null) {
-                  print(error);
+                  showErrorMessage(context,
+                      message: error, errorType: "Validation Error");
                   return " ";
                 }
                 error = ac.domainValidation();
                 if (error != null) {
-                  print(error);
+                  showErrorMessage(context,
+                      message: error, errorType: "Validation Error");
                   return " ";
                 }
                 return null;
@@ -227,22 +234,26 @@ class _SignUpPageState extends State<SignUpPage> {
                   );
                   String? error = ac.empty();
                   if (error != null) {
-                    print(error);
+                    showErrorMessage(context,
+                        message: error, errorType: "Validation Error");
                     return " ";
                   }
                   error = ac.length();
                   if (error != null) {
-                    print(error);
+                    showErrorMessage(context,
+                        message: error, errorType: "Validation Error");
                     return " ";
                   }
                   error = ac.passwordSecurity();
                   if (error != null) {
-                    print(error);
+                    showErrorMessage(context,
+                        message: error, errorType: "Validation Error");
                     return " ";
                   }
                   if (password2 != value) {
-                    print("${ac.validationType} Field do not match");
-
+                    showErrorMessage(context,
+                        message: "${ac.validationType} Field do not match",
+                        errorType: "Validation Error");
                     return " ";
                   }
                   return null;
@@ -300,7 +311,10 @@ class _SignUpPageState extends State<SignUpPage> {
                     maxLength: 20);
                 print(password.toString());
                 if (password.text != password2) {
-                  print("${ac.validationType} Field do not match");
+                  showErrorMessage(context,
+                      message: "${ac.validationType} Field do not match",
+                      errorType: "Validation Error");
+
                   return " ";
                 }
                 return null;
@@ -351,13 +365,6 @@ class _SignUpPageState extends State<SignUpPage> {
           children: [
             ElevatedButton(
               onPressed: () async {
-                setState(() {
-                  onPressed = true;
-                });
-                await Future.delayed(Duration(seconds: 2));
-                setState(() {
-                  onPressed = false;
-                });
                 print(password.text);
                 print(password2.toString());
                 return _validation(context);
