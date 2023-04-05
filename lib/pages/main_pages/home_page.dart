@@ -21,27 +21,27 @@ class _HomePageMainState extends State<HomePageMain> {
   int userID = 0;
   var firstName = "";
 
-  String? userNameKey = "";
+  String? userNameKey = "aa";
   getToken() async {
     print("User Name key" + userNameKey!);
     String? tokenRead = await token.read(key: 'token');
     setState(() {
       tokenSave = tokenRead;
     });
+    await getProfile();
+    await splitNames();
   }
 
   splitNames() async {
     userNameKey = await token.read(key: 'username');
-    // List<String> firstNameSplit = userNameKey!.split(" ");
     // return firstNameSplit[0];
-    // print(userNameKey! + "AAA");
+    // print(userNameKey! + "AAA");s
     setState(() {});
   }
 
   getProfile() async {
     if (userName == "") {
       userEmail = await token.read(key: 'email');
-      print(userEmail);
       final response = await http.get(
         Uri.parse(
             'https://aaryansyproutineapplication.azurewebsites.net/api/users/${userEmail}'),
@@ -57,11 +57,10 @@ class _HomePageMainState extends State<HomePageMain> {
           userID = json["message"][0]["id"];
           print(userID);
         }
-        await token.write(key: "id", value: userID.toString());
-        await token.write(key: "username", value: userName);
+        token.write(key: "id", value: userID.toString());
+        token.write(key: "username", value: userName);
       }
 
-      // setState(() {});
       // print(token.read(key: 'email') as String);
       // final responseJson = jsonDecode(response.body);
     }
@@ -71,117 +70,120 @@ class _HomePageMainState extends State<HomePageMain> {
     super.initState();
     print("Init State Called");
     getToken();
-    splitNames();
-    getProfile();
   }
 
   final section = [1, 2, 3, 4];
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.cyan,
-        body: SafeArea(
-          child: Column(
-            children: [
-              VxArc(
-                  height: 15,
-                  arcType: VxArcType.CONVEX,
-                  edge: VxEdge.BOTTOM,
-                  child: Container(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    padding: EdgeInsets.all(50),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            "Hello "
-                                .text
-                                .fontWeight(FontWeight.bold)
-                                .size(20)
-                                .make(),
-                            "${userNameKey}"
-                                .text
-                                .textStyle(context.captionStyle)
-                                .fontWeight(FontWeight.bold)
-                                .size(30)
-                                .make()
-                          ],
-                        ),
-                        Container(
-                            decoration: BoxDecoration(
-                                color: Colors.cyan,
-                                borderRadius: BorderRadius.circular(9)),
-                            padding: EdgeInsets.all(10),
-                            child: Icon(
-                              Icons.sunny,
-                              color: Colors.yellow,
-                              size: 30,
-                            ))
-                      ],
-                    ),
-                  )),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
+    return userNameKey == "aa"
+        ? Container(
+            color: Colors.white,
+            child: Center(child: CircularProgressIndicator()))
+        : Scaffold(
+            backgroundColor: Colors.cyan,
+            body: SafeArea(
+              child: Column(
                 children: [
-                  Row(
-                    children: [
-                      "Your Modules"
-                          .text
-                          .fontWeight(FontWeight.bold)
-                          .size(30)
-                          .make()
-                          .p16(),
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(30),
-                    height: 500,
-                    child: ListView.builder(
-                      itemCount: section.length,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Container(
-                            padding: EdgeInsets.all(30),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10)),
-                            child: Row(
+                  VxArc(
+                      height: 15,
+                      arcType: VxArcType.CONVEX,
+                      edge: VxEdge.BOTTOM,
+                      child: Container(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        padding: EdgeInsets.all(50),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Icon(
-                                  Icons.backpack,
-                                  size: 40,
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    "Section ${section[index]}"
-                                        .text
-                                        .bold
-                                        .xl
-                                        .make(),
-                                    "Total Students  = 100".text.make()
-                                  ],
-                                )
+                                "Hello "
+                                    .text
+                                    .fontWeight(FontWeight.bold)
+                                    .size(20)
+                                    .make(),
+                                "${userNameKey}"
+                                    .text
+                                    .textStyle(context.captionStyle)
+                                    .fontWeight(FontWeight.bold)
+                                    .size(30)
+                                    .make()
                               ],
                             ),
-                          ),
-                        );
-                      },
-                    ),
+                            Container(
+                                decoration: BoxDecoration(
+                                    color: Colors.cyan,
+                                    borderRadius: BorderRadius.circular(9)),
+                                padding: EdgeInsets.all(10),
+                                child: Icon(
+                                  Icons.sunny,
+                                  color: Colors.yellow,
+                                  size: 30,
+                                ))
+                          ],
+                        ),
+                      )),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          "Your Modules"
+                              .text
+                              .fontWeight(FontWeight.bold)
+                              .size(30)
+                              .make()
+                              .p16(),
+                        ],
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(30),
+                        height: 500,
+                        child: ListView.builder(
+                          itemCount: section.length,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: Container(
+                                padding: EdgeInsets.all(30),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.backpack,
+                                      size: 40,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        "Section ${section[index]}"
+                                            .text
+                                            .bold
+                                            .xl
+                                            .make(),
+                                        "Total Students  = 100".text.make()
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
                   )
                 ],
-              )
-            ],
-          ),
-        ));
+              ),
+            ));
   }
 }

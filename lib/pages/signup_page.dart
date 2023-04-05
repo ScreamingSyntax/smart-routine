@@ -74,7 +74,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   final _formKey = GlobalKey<FormState>();
   void _validation(BuildContext context) async {
-    await Future.delayed(Duration(seconds: 1));
+    // await Future.delayed(Duration(seconds: 1));
     if (_formKey.currentState!.validate()) {
       // Navigator.pushReplacement(
       //     context, MaterialPageRoute(builder: (context) => LoginPage()));
@@ -388,7 +388,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 setState(() {
                   onPressed = true;
                 });
-                await Future.delayed(Duration(seconds: 2));
+                // await Future.delayed(Duration(seconds: 2));/
                 setState(() {
                   onPressed = false;
                 });

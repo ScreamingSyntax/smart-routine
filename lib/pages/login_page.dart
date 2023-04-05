@@ -58,14 +58,14 @@ class _LoginPageState extends State<LoginPage> {
           setState(() {
             text = "Login Successfull";
           });
-          await Future.delayed(Duration(seconds: 1));
+          // await Future.delayed(Duration(seconds: 1));
           setState(() {
             text = "Fetching data....";
           });
-          await Future.delayed(Duration(seconds: 3));
+          // await Future.delayed(Duration(seconds: 3));
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => HomePage()));
-          await Future.delayed(Duration(seconds: 2));
+          // await Future.delayed(Duration(seconds: 2));
           setState(() {
             loggedIn = false;
           });
@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
           setState(() {
             netWorkAction = true;
           });
-          await Future.delayed(Duration(seconds: 2));
+          // await Future.delayed(Duration(seconds: 2));
           setState(() {
             netWorkAction = false;
           });
@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
   var focusedField = true;
   final _formKey = GlobalKey<FormState>();
   void _validation(BuildContext context) async {
-    await Future.delayed(Duration(seconds: 1));
+    // await Future.delayed(Duration(seconds: 1));
     if (_formKey.currentState!.validate()) {
       login(email.text, password.text);
       // authController.loginUser(email.text, password.text, context);
@@ -160,13 +160,6 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     );
-
-    await Future.delayed(Duration(seconds: 1));
-    fToast!.showToast(
-        child: toast,
-        gravity: gravity,
-        fadeDuration: Duration(seconds: 0),
-        toastDuration: Duration(seconds: 2));
   }
 
   Widget circularMessage(String message) {
@@ -349,7 +342,7 @@ class _LoginPageState extends State<LoginPage> {
               setState(() {
                 pressedOn = true;
               });
-              await Future.delayed(Duration(seconds: 1));
+              // await Future.delayed(Duration(seconds: 1));
               setState(() {
                 pressedOn = false;
               });
