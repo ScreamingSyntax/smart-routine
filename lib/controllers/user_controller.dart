@@ -28,6 +28,7 @@ class UserController {
       }
       ac.writeToStorage('id', userID.toString());
       ac.writeToStorage('username', userName);
+      UserDetail.details.clear();
       UserDetail.details
           .add(User(id: userID, name: userName, email: userEmail));
       print(UserDetail.details);
