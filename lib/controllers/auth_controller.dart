@@ -40,10 +40,11 @@ class AuthController {
           headers: {"Content-Type": "application/json"});
 
       var one = json.decode(response.body);
-      storage.writeToStorage('email', one["email"]);
+      print(one);
       // await storage.write(key: 'email', value: one["email"]);
       if (response.statusCode == 200) {
         if (one["success"] == 1) {
+          storage.writeToStorage('email', one["email"]);
           storage.writeToStorage('token', one['token']);
           return one["message"];
           // await Future.delayed(Duration(seconds: 1));
@@ -53,8 +54,6 @@ class AuthController {
         if (one["success"] == 0) {
           return one['data'];
         }
-      } else {
-        return "Server Issue";
       }
       return "Something went Wrong";
     } catch (e) {

@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:routine_app/controllers/local_storage.dart';
 import 'package:routine_app/models/user.dart';
 import 'package:routine_app/routes/my_routes.dart';
+import 'package:routine_app/widgets/logOut.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class ProfilePageeMain extends StatefulWidget {
@@ -179,8 +180,9 @@ class _ProfilePageeMainState extends State<ProfilePageeMain> {
                           onPressed: null, child: Text("Update Profile")),
                       ElevatedButton(
                           onPressed: () async {
-                            await storage.deleteAll();
-                            Navigator.pushNamed(context, MyRoutes.firstPage);
+                            showLogout(context,
+                                message: "Are you sure you want to logout?",
+                                errorType: "Confirmation");
                           },
                           child: Text("Log Out"))
                     ],

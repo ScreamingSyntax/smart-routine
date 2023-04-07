@@ -28,7 +28,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      builder: FToastBuilder(),
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       theme: MyThemes.lightTheme(context),

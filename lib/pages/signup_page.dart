@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:routine_app/controllers/auth_controller.dart';
+import 'package:routine_app/widgets/CircularMessage.dart';
 import 'package:routine_app/widgets/dialogBox.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -25,9 +26,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String password2 = "";
 
   FToast? fToast;
-  bool onNetwork = false;
-  bool onPressed = false;
-  bool redirect = false;
+
+  bool netWorkAction = false;
 
   final name = TextEditingController();
   final email = TextEditingController();
@@ -79,24 +79,33 @@ class _SignUpPageState extends State<SignUpPage> {
   void _validation(BuildContext context) async {
     // await Future.delayed(Duration(seconds: 1));
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        netWorkAction = true;
+      });
       // Navigator.pushReplacement(
       //     context, MaterialPageRoute(builder: (context) => LoginPage()));
       bool check =
           await ac.signUp(context, name.text, email.text, password.text);
       if (check) {
         setState(() {
-          redirect = true;
+          netWorkAction = false;
         });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Successfully registered")));
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => LoginPage()));
+      } else {
+        setState(() {
+          netWorkAction = false;
+        });
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return onPressed
-        ? CircularProgressIndicator()
+    return netWorkAction
+        ? MyCircularProgressBar(context, "Verifying Credentials")
         : Scaffold(
             resizeToAvoidBottomInset: true,
             body: SafeArea(

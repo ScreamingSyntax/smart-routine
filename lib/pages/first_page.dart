@@ -5,6 +5,8 @@ import 'package:routine_app/pages/login_page.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../widgets/PopScope.dart';
+
 // ignore: must_be_immutable
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
@@ -32,18 +34,21 @@ class _FirstPageState extends State<FirstPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _imageSlider(context),
-            _textBottom(context),
-            _indicatorSlider(context),
-            _bottomButtons(context),
-            const SizedBox() //This is for bottom space while we do the fucking space between
-          ],
+    return WillPopScope(
+      onWillPop: () => showExitPopup(context),
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _imageSlider(context),
+              _textBottom(context),
+              _indicatorSlider(context),
+              _bottomButtons(context),
+              const SizedBox() //This is for bottom space while we do the fucking space between
+            ],
+          ),
         ),
       ),
     );

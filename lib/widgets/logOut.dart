@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:routine_app/pages/first_page.dart';
+import 'package:routine_app/routes/my_routes.dart';
 
-Future<bool> showErrorMessage(BuildContext context,
+FlutterSecureStorage storage = FlutterSecureStorage();
+
+Future<bool> showLogout(BuildContext context,
     {required String message, required String errorType}) async {
   return await showDialog<bool>(
         context: context,
@@ -15,7 +20,6 @@ Future<bool> showErrorMessage(BuildContext context,
           title: Text(
             errorType,
             style: TextStyle(
-              color: Colors.red,
               fontWeight: FontWeight.bold,
               fontSize: 20,
             ),
@@ -30,12 +34,29 @@ Future<bool> showErrorMessage(BuildContext context,
             ),
           ),
           actions: [
-            TextButton(
+            ElevatedButton(
+              onPressed: () => {
+                storage.deleteAll(),
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => FirstPage()))
+              },
+              child: Text(
+                'LogOut',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(Colors.red)),
               onPressed: () => Navigator.of(context).pop(false),
               child: Text(
-                'Try Again',
+                'Cancel',
                 style: TextStyle(
-                  color: Colors.red,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
                 ),

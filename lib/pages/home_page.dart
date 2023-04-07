@@ -22,6 +22,13 @@ class _HomePageState extends State<HomePage> {
 
   int index = 0;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {});
+  }
+
   final items = <Widget>[
     Icon(
       Icons.home,

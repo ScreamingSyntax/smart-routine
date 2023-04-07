@@ -1,26 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_exit_app/flutter_exit_app.dart';
 
 Future<bool> showExitPopup(BuildContext context) async {
   return await showDialog(
-        //show confirm dialogue
-        //the return value will be from "Yes" or "No" options
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Exit App'),
-          content: Text('Do you want to exit an App?'),
+          title: Text(
+            'Exit App',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.red,
+            ),
+          ),
+          content: Text(
+            'Do you want to exit the app?',
+            style: TextStyle(
+              fontSize: 18.0,
+              color: Colors.black,
+            ),
+          ),
           actions: [
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(false),
-              //return false when click on "NO"
-              child: Text('No'),
+              child: Text(
+                'No',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                ),
+              ),
             ),
             ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              //return true when click on "Yes"
-              child: Text('Yes'),
-            ),
+                onPressed: () {
+                  SystemNavigator.pop();
+                },
+                child: Text(
+                  'Yes',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                  ),
+                ),
+                style: ButtonStyle(
+                    backgroundColor: MaterialStatePropertyAll(Colors.red))),
           ],
         ),
       ) ??
-      false; //if showDialouge had returned null, then return false
+      false;
 }

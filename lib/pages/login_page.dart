@@ -9,6 +9,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart';
 import 'package:routine_app/pages/home_page.dart';
 import 'package:routine_app/pages/signup_page.dart';
+import 'package:routine_app/widgets/CircularMessage.dart';
 import 'package:routine_app/widgets/dialogBox.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -92,14 +93,23 @@ class _LoginPageState extends State<LoginPage> {
   void _validation(BuildContext context) async {
     // await Future.delayed(Duration(seconds: 1));
     if (_formKey.currentState!.validate()) {
+      setState(() {
+        netWorkAction = true;
+      });
       String message = await authController.login(email.text, password.text);
 
       if (message == "Login Successfully") {
+        setState(() {
+          netWorkAction = false;
+        });
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (context) => HomePage()));
       } else {
         showErrorMessage(context,
             message: message, errorType: "Verification Issue");
+        setState(() {
+          netWorkAction = false;
+        });
       }
       // authController.loginUser(email.text, password.text, context);
 
@@ -121,54 +131,60 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      // backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Container(
-          constraints: BoxConstraints.expand(),
-          // padding: const EdgeInsets.all(20.0),
-          child: Column(
-            // verticalDirection: VerticalDirection.up,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            // ignore: prefer_const_literals_to_create_immutables
-            children: <Widget>[
-              HeadingContext(),
-              Container(
-                // padding: EdgeInsets.all(30),
-                child: Column(
-                  // crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    "Login"
-                        .text
-                        .color(Theme.of(context).colorScheme.onSecondary)
-                        .bold
-                        .xl5
-                        .make(),
-                    "Please Sign in to Continue"
-                        .text
-                        .textStyle(context.captionStyle)
-                        .lg
-                        .make(),
-                  ],
+    return netWorkAction
+        ? MyCircularProgressBar(context, "Verifying Credentials")
+        : WillPopScope(
+            onWillPop: () => showExitPopup(context),
+            child: Scaffold(
+              resizeToAvoidBottomInset: true,
+              // backgroundColor: Colors.white,
+              body: SafeArea(
+                child: Container(
+                  constraints: BoxConstraints.expand(),
+                  // padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    // verticalDirection: VerticalDirection.up,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    // ignore: prefer_const_literals_to_create_immutables
+                    children: <Widget>[
+                      HeadingContext(),
+                      Container(
+                        // padding: EdgeInsets.all(30),
+                        child: Column(
+                          // crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            "Login"
+                                .text
+                                .color(
+                                    Theme.of(context).colorScheme.onSecondary)
+                                .bold
+                                .xl5
+                                .make(),
+                            "Please Sign in to Continue"
+                                .text
+                                .textStyle(context.captionStyle)
+                                .lg
+                                .make(),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: Column(
+                          children: [
+                            _form(context),
+                            _lowerContent(context),
+                          ],
+                        ),
+                      ),
+                      BottomContent()
+                    ],
+                  ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Column(
-                  children: [
-                    _form(context),
-                    _lowerContent(context),
-                  ],
-                ),
-              ),
-              BottomContent()
-            ],
-          ),
-        ),
-      ),
-    );
+            ),
+          );
   }
 
   Widget _form(BuildContext context) => Form(
