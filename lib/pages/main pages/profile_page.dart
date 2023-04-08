@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:routine_app/controllers/local_storage.dart';
 import 'package:routine_app/models/user.dart';
-import 'package:routine_app/routes/my_routes.dart';
+
 import 'package:routine_app/widgets/logOut.dart';
 import 'package:velocity_x/velocity_x.dart';
 

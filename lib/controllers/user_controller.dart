@@ -14,7 +14,6 @@ class UserController {
     final response = await http.get(
       Uri.parse(
           'https://aaryansyproutineapplication.azurewebsites.net/api/users/${userEmail}'),
-      // Send authorization headers to the backend.
       headers: {
         'Authorization': 'Barear ${await ac.readFromStorage('token') as String}'
       },
@@ -33,7 +32,5 @@ class UserController {
           .add(User(id: userID, name: userName, email: userEmail));
       print(UserDetail.details);
     }
-    // print(token.read(key: 'email') as String);
-    // final responseJson = jsonDecode(response.body);
   }
 }

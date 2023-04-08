@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_exit_app/flutter_exit_app.dart';
 
 Future<bool> showExitPopup(BuildContext context) async {
   return await showDialog(

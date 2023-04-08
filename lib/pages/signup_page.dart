@@ -4,13 +4,10 @@ import 'package:routine_app/widgets/CircularMessage.dart';
 import 'package:routine_app/widgets/dialogBox.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import '../routes/my_routes.dart';
 import '../styles/text_form_field.dart';
 import '../validation/my_validations.dart';
 import 'login_page.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
-import 'dart:convert';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -41,49 +38,13 @@ class _SignUpPageState extends State<SignUpPage> {
     fToast!.init(context);
   }
 
-  // void dispose() {
-  //   name.dispose();
-  //   email.dispose();
-  //   password.dispose();
-  //   super.dispose();
-  // }
-
-  // Future<bool> signUp(String name, String email, String password) async {
-  //   print(name);
-  //   print(email);
-  //   print(password);
-  //   try {
-  //     Response response = await post(
-  //         Uri.parse(
-  //             "https://aaryansyproutineapplication.azurewebsites.net/api/users/"),
-  //         headers: {"Content-Type": "application/json"},
-  //         body:
-  //             jsonEncode({"name": name, "email": email, "password": password}));
-  //     if (response.statusCode == 200) {
-  //       print("Account Created Successfully");
-  //       return true;
-  //     }
-  //     if (response.statusCode == 500) {
-  //       _print("Email Already Exists");
-  //     } else {
-  //       _print("Failed To create an Account");
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //     _print("Server Issue");
-  //   }
-  //   return false;
-  // }
-
   final _formKey = GlobalKey<FormState>();
   void _validation(BuildContext context) async {
-    // await Future.delayed(Duration(seconds: 1));
     if (_formKey.currentState!.validate()) {
       setState(() {
         netWorkAction = true;
       });
-      // Navigator.pushReplacement(
-      //     context, MaterialPageRoute(builder: (context) => LoginPage()));
+
       bool check =
           await ac.signUp(context, name.text, email.text, password.text);
       if (check) {
@@ -110,13 +71,10 @@ class _SignUpPageState extends State<SignUpPage> {
             resizeToAvoidBottomInset: true,
             body: SafeArea(
               child: Container(
-                // padding: const EdgeInsets.all(20.0),
                 constraints: const BoxConstraints.expand(),
                 child: Column(
-                  // verticalDirection: VerticalDirection.up,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  // ignore: prefer_const_literals_to_create_immutables
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.symmetric(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:routine_app/pages/first_page.dart';
-import 'package:routine_app/routes/my_routes.dart';
 
 FlutterSecureStorage storage = FlutterSecureStorage();
 

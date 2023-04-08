@@ -1,5 +1,4 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:routine_app/controllers/auth_controller.dart';
 
 class LocalStorage {
   FlutterSecureStorage storage = FlutterSecureStorage();

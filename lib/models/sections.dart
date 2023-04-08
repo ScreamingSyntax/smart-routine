@@ -101,7 +101,3 @@ class Classes {
     return data;
   }
 }
-
-class FetchSection {
-  static List<Section> section = [];
-}

@@ -1,27 +1,3 @@
-// import 'dart:convert';
-
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:http/http.dart';
-
-// class AuthController {
-//   Future loginUser(String email, String password, BuildContext context) async {
-//     final _url = "https://hostingsyp.up.railway.app/api/users/login";
-//     Response response = await post(
-//         Uri.parse("https://hostingsyp.up.railway.app/api/users/login"),
-//         body: jsonEncode({"email": email, "password": password}),
-//         headers: {"Content-Type": "application/json"});
-//     if (response.statusCode == 200) {
-//       var loginArr = response.body;
-//       print(loginArr);
-//     } else {
-//       print("Error");
-//     }
-//   }
-
-//   void setState(Null Function() param0) {}
-// }
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -47,9 +23,6 @@ class AuthController {
           storage.writeToStorage('email', one["email"]);
           storage.writeToStorage('token', one['token']);
           return one["message"];
-          // await Future.delayed(Duration(seconds: 1));
-          // await Future.delayed(Duration(seconds: 3));
-          // await Future.delayed(Duration(seconds: 2));
         }
         if (one["success"] == 0) {
           return one['data'];

@@ -2,7 +2,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:routine_app/models/sections.dart';
-import 'package:routine_app/pages/main_pages/home%20widgets/routineDetail.dart';
+
+import 'package:routine_app/widgets/homePage/days%20routine/routine.dart';
 
 import 'package:velocity_x/velocity_x.dart';
 

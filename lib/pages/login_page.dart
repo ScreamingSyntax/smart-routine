@@ -1,12 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'dart:async';
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart';
+
 import 'package:routine_app/pages/home_page.dart';
 import 'package:routine_app/pages/signup_page.dart';
 import 'package:routine_app/widgets/CircularMessage.dart';
@@ -14,12 +9,11 @@ import 'package:routine_app/widgets/dialogBox.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../controllers/auth_controller.dart';
-import '../routes/my_routes.dart';
+
 import '../styles/text_form_field.dart';
 import '../validation/my_validations.dart';
 import '../widgets/PopScope.dart';
 import '../widgets/login&signup/login_signup.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class LoginPage extends StatefulWidget {
   static bool obscureText = true;
@@ -40,54 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   final email = TextEditingController();
   final password = TextEditingController();
   bool netWorkAction = false;
-  // Future<void> login(String email, String password) async {
-  //   try {
-  //     Response response = await post(
-  //         Uri.parse(
-  //             "https://aaryansyproutineapplication.azurewebsites.net/api/users/login"),
-  //         body: jsonEncode({"email": email, "password": password}),
-  //         headers: {"Content-Type": "application/json"});
 
-  //     var one = json.decode(response.body);
-  //     await storage.write(key: 'email', value: one["email"]);
-  //     if (response.statusCode == 200) {
-  //       if (one["success"] == 1) {
-  //         print(one["message"]);
-  //         final storage = new FlutterSecureStorage();
-  //         await storage.write(key: "token", value: one["token"]);
-  //         setState(() {
-  //           loggedIn = true;
-  //         });
-  //         setState(() {
-  //           text = "Login Successfull";
-  //         });
-  //         // await Future.delayed(Duration(seconds: 1));
-  //         setState(() {
-  //           text = "Fetching data....";
-  //         });
-  //         // await Future.delayed(Duration(seconds: 3));
-  //         Navigator.pushReplacement(
-  //             context, MaterialPageRoute(builder: (context) => HomePage()));
-  //         // await Future.delayed(Duration(seconds: 2));
-  //       }
-  //       if (one["success"] == 0) {
-  //         setState(() {
-  //           netWorkAction = true;
-  //         });
-  //         // await Future.delayed(Duration(seconds: 2));
-  //         setState(() {
-  //           netWorkAction = false;
-  //         });
-  //         print(one['data']);
-  //       }
-  //     }
-  //   } catch (e) {
-  //     print(e);
-  //     print("Server Issue");
-  //   }
-  // }
-
-  late String? _onchanged = "";
   var focusedField = true;
   final _formKey = GlobalKey<FormState>();
   void _validation(BuildContext context) async {
@@ -111,13 +58,6 @@ class _LoginPageState extends State<LoginPage> {
           netWorkAction = false;
         });
       }
-      // authController.loginUser(email.text, password.text, context);
-
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(
-      //     builder: (context) => HomePage(),
-      //   ),
     }
   }
 
@@ -137,22 +77,16 @@ class _LoginPageState extends State<LoginPage> {
             onWillPop: () => showExitPopup(context),
             child: Scaffold(
               resizeToAvoidBottomInset: true,
-              // backgroundColor: Colors.white,
               body: SafeArea(
                 child: Container(
                   constraints: BoxConstraints.expand(),
-                  // padding: const EdgeInsets.all(20.0),
                   child: Column(
-                    // verticalDirection: VerticalDirection.up,
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    // ignore: prefer_const_literals_to_create_immutables
                     children: <Widget>[
                       HeadingContext(),
                       Container(
-                        // padding: EdgeInsets.all(30),
                         child: Column(
-                          // crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             "Login"
                                 .text
@@ -220,8 +154,6 @@ class _LoginPageState extends State<LoginPage> {
             TextFormField(
               controller: password,
               obscureText: LoginPage.obscureText,
-              // onTap: () => setState(() => focusedField = false),
-              // onTapOutside: (event) => setState(() => focusedField = false),
               validator: (value) {
                 PasswordValidation ac = PasswordValidation(
                   value: value,

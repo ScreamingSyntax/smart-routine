@@ -7,7 +7,6 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../widgets/PopScope.dart';
 
-// ignore: must_be_immutable
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
 
