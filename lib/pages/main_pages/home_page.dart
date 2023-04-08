@@ -2,10 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart';
 import 'package:routine_app/controllers/auth_controller.dart';
 import 'package:routine_app/controllers/local_storage.dart';
 import 'package:routine_app/controllers/user_controller.dart';
+import 'package:routine_app/models/sections.dart';
 import 'package:routine_app/models/user.dart';
+import 'package:routine_app/pages/main_pages/home%20widgets/daysDetail.dart';
 import 'package:routine_app/widgets/CircularMessage.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +21,7 @@ class HomePageMain extends StatefulWidget {
 }
 
 class _HomePageMainState extends State<HomePageMain> {
+  Section sec = Section();
   UserController uc = UserController();
   LocalStorage ac = LocalStorage();
   String? tokenSave = null;
@@ -30,6 +34,25 @@ class _HomePageMainState extends State<HomePageMain> {
       setState(() {});
     }
     await uc.getProfile();
+    await fetchSection();
+  }
+
+  Future fetchSection() async {
+    try {
+      Response response = await get(
+          Uri.parse(
+            "https://aaryansyproutineapplication.azurewebsites.net/api/routine/",
+          ),
+          headers: {"Content-Type": "application/json"});
+      sec = Section.fromJson(json.decode(response.body));
+      setState(() {});
+      print(sec.data![0].sectionName!);
+      // for (int i = 0; i < sec.data!.length; i++) {
+      //   print(sec.data![i].sectionName);
+      // }
+    } catch (e) {
+      print("Something went wrong");
+    }
   }
 
   firstName() {
@@ -116,48 +139,80 @@ class _HomePageMainState extends State<HomePageMain> {
                                 .p16(),
                           ],
                         ),
-                        Container(
-                          padding: EdgeInsets.all(30),
-                          height: 500,
-                          child: ListView.builder(
-                            itemCount: section.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.all(5),
-                                child: Container(
-                                  padding: EdgeInsets.all(30),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.backpack,
-                                        size: 40,
+                        sec.data == null
+                            ? Container(
+                                height: 500,
+                                color: Colors.transparent,
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              )
+                            : Container(
+                                padding: EdgeInsets.all(30),
+                                height: 500,
+                                child: ListView.builder(
+                                  itemCount: sec.data!.length,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.all(5),
+                                      child: InkWell(
+                                        onTap: () => {
+                                          print(
+                                              "${sec.data![index].sectionName!}"),
+                                          print("${sec.data}"),
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      DaysDetail(
+                                                          section: sec
+                                                              .data![index])))
+                                          // Navigator.push(
+                                          //     context,
+                                          //     MaterialPageRoute(
+                                          //         builder: (context) =>
+                                          //             DaysDetail(
+                                          //                 section: sec
+                                          //                     .data![index])))
+                                          // Navigator.pushNamed(context, DaysDetail(section: sec.data![index].sectionName! ))
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.all(30),
+                                          decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius:
+                                                  BorderRadius.circular(10)),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.backpack,
+                                                size: 40,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  "${sec.data![index].sectionName}"
+                                                      .text
+                                                      .bold
+                                                      .xl
+                                                      .make(),
+                                                  "Total Students  = 100"
+                                                      .text
+                                                      .make()
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                        ),
                                       ),
-                                      SizedBox(
-                                        width: 10,
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          "Section ${section[index]}"
-                                              .text
-                                              .bold
-                                              .xl
-                                              .make(),
-                                          "Total Students  = 100".text.make()
-                                        ],
-                                      )
-                                    ],
-                                  ),
+                                    );
+                                  },
                                 ),
-                              );
-                            },
-                          ),
-                        )
+                              )
                       ],
                     )
                   ],

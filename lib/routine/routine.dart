@@ -1,3 +1,0 @@
-class Routine {}
-
-class RoutineItem {}
