@@ -64,7 +64,7 @@ class _FirstPageState extends State<FirstPage> {
           );
         },
         options: CarouselOptions(
-            height: 500,
+            height: MediaQuery.of(context).size.height / 1.75,
             // enlargeCenterPage: true,
             // animateToClosest: true,
             enlargeCenterPage: true,
@@ -83,7 +83,7 @@ class _FirstPageState extends State<FirstPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            "Quality Course\nAcross The Globe".text.xl4.extraBlack.make(),
+            "Quality Course\nAcross The Globe".text.xl3.extraBlack.make(),
             "London Metropolitan University, commonly known as London Met, is a public research university in London, England. The University of North London and London Guildhall University merged in 2002 to create the university. The University's roots go back to 1848."
                 .text
                 .textStyle(context.captionStyle)
@@ -118,19 +118,19 @@ class _FirstPageState extends State<FirstPage> {
                   MediaQuery.of(context).size.width *
                       0.4, // 80% of screen width
                   MediaQuery.of(context).size.height *
-                      0.04, // 8% of screen height
+                      0.05, // 8% of screen height
                 ),
               ),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
             child: Text(
               "Back",
               style:
-                  TextStyle(fontSize: MediaQuery.of(context).size.width * 0.05),
+                  TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04),
             ),
           ),
           ElevatedButton(
@@ -146,19 +146,20 @@ class _FirstPageState extends State<FirstPage> {
                   MediaQuery.of(context).size.width *
                       0.4, // 80% of screen width
                   MediaQuery.of(context).size.height *
-                      0.04, // 8% of screen height
+                      0.05, // 8% of screen height
                 ),
               ),
               shape: MaterialStateProperty.all(
                 RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(10),
                 ),
               ),
             ),
             child: Text(
               "Next",
               style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.05,
+                  fontSize: MediaQuery.of(context).size.width * 0.04,
+                  fontWeight: FontWeight.bold,
                   fontFamily: GoogleFonts.redHatDisplay().fontFamily),
             ),
           ),

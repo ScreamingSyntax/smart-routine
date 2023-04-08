@@ -1,9 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 
-import 'package:routine_app/pages/main_pages/home_page.dart';
-import 'package:routine_app/pages/main_pages/profile_page.dart';
-import 'package:routine_app/pages/main_pages/settings_page.dart';
+import 'package:routine_app/pages/main%20pages/home_page.dart';
+import 'package:routine_app/pages/main%20pages/profile_page.dart';
+import 'package:routine_app/pages/main%20pages/settings_page.dart';
 import 'package:routine_app/widgets/PopScope.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,17 +30,14 @@ class _HomePageState extends State<HomePage> {
     Icon(
       Icons.home,
       size: 30,
-      color: Color(0xff62E962),
     ),
     Icon(
       Icons.settings,
       size: 30,
-      color: Color(0xff62E962),
     ),
     Icon(
       Icons.people_alt_rounded,
       size: 30,
-      color: Color(0xff62E962),
     )
   ];
 
@@ -51,7 +48,6 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         body: screens[index],
         extendBody: true,
-        backgroundColor: Colors.transparent,
         bottomNavigationBar: CurvedNavigationBar(
           color: Colors.white,
           key: _navigationKey,

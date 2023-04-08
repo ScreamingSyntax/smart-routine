@@ -37,6 +37,10 @@ class DaysDetail extends StatelessWidget {
     Icon(
       Icons.account_box,
       color: Colors.purple,
+    ),
+    Icon(
+      Icons.holiday_village,
+      color: Colors.purple,
     )
   ];
   @override

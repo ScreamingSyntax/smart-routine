@@ -5,7 +5,7 @@ import "package:velocity_x/velocity_x.dart";
 class MyThemes {
   static Color bluishColor = const Color(0xff403b58);
   static Color blue = const Color(0xff7266F6);
-  static Color creamishColor = const Color(0xff5f5f5f5);
+  static Color creamishColor = const Color(0xffE4F0FE);
   static Color darkCreamColor = Vx.gray900;
   static Color lightBluishColor = Vx.indigo500;
   static lightTheme(BuildContext context) => ThemeData(
@@ -25,8 +25,9 @@ class MyThemes {
           onSurface: const Color(0xff403b58),
           //For Text on the Surface
         ),
-        cardColor: Color(
-            0xffE0E6F3), // I'll use this for cards, containers and text form field fill color
+        iconTheme: IconThemeData(color: Colors.amber),
+        cardColor:
+            creamishColor, // I'll use this for cards, containers and text form field fill color
         scaffoldBackgroundColor: Colors.white, //For Background Colors
       );
   static darkTheme(BuildContext context) => ThemeData(
@@ -37,12 +38,14 @@ class MyThemes {
           // ignore: use_full_hex_values_for_flutter_colors
           onPrimary: creamishColor,
           secondary: creamishColor,
-          onSecondary: Colors.black,
+          onSecondary: Colors.white,
           error: Colors.red,
           onError: Colors.red,
           background: Colors.white,
           onBackground: Vx.gray900,
           surface: Colors.greenAccent,
           onSurface: Colors.blueGrey),
+      cardColor: bluishColor,
+      iconTheme: IconThemeData(color: Colors.white),
       scaffoldBackgroundColor: bluishColor);
 }
