@@ -85,9 +85,17 @@ class _HomePageMainState extends State<HomePageMain> {
               body: SafeArea(
                 child: Column(
                   children: [
-                    HomePageTop(firstName: firstName()),
-                    HomePageContent(
-                      sec: sec,
+                    Expanded(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            HomePageTop(firstName: firstName()),
+                            HomePageContent(
+                              sec: sec,
+                            ),
+                          ],
+                        ),
+                      ),
                     )
                   ],
                 ),
