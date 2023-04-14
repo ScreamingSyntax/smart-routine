@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 
 import 'package:routine_app/controllers/local_storage.dart';
 import 'package:routine_app/controllers/user_controller.dart';
+import 'package:routine_app/main.dart';
 import 'package:routine_app/models/sections.dart';
 import 'package:routine_app/models/user.dart';
 import 'package:routine_app/widgets/CircularMessage.dart';
@@ -20,6 +21,9 @@ class HomePageMain extends StatefulWidget {
 }
 
 class _HomePageMainState extends State<HomePageMain> {
+  final GlobalKey<_HomePageMainState> myWidgetKey =
+      GlobalKey<_HomePageMainState>();
+
   Section sec = Section();
   UserController uc = UserController();
   LocalStorage ac = LocalStorage();
@@ -33,6 +37,7 @@ class _HomePageMainState extends State<HomePageMain> {
       setState(() {});
     }
     await uc.getProfile();
+
     await fetchSection();
   }
 
@@ -63,7 +68,9 @@ class _HomePageMainState extends State<HomePageMain> {
   initState() {
     super.initState();
     print("Init State Called");
-    getToken();
+    if (sec.data == null || sec.data!.isEmpty) {
+      getToken();
+    }
   }
 
   final section = [1, 2, 3, 4];
@@ -72,30 +79,31 @@ class _HomePageMainState extends State<HomePageMain> {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       semanticsLabel: "Refreshing",
-      backgroundColor: Colors.cyan,
+      backgroundColor: MyApp.lightThemeData ? Colors.cyan : Colors.black,
       color: Colors.black,
       onRefresh: () {
         setState(() {});
         return uc.getProfile();
       },
       child: UserDetail.details.isEmpty
-          ? MyCircularProgressBar(context, "Fetching User Data")
+          ? MyCircularProgressBar(context, "Fetching Announcements",
+              color: MyApp.lightThemeData == false
+                  ? Color(0xff28282B)
+                  : Colors.white,
+              foreGroundColor:
+                  MyApp.lightThemeData == false ? Colors.white : Colors.black)
           : Scaffold(
-              backgroundColor: Colors.cyan,
+              resizeToAvoidBottomInset: false,
+              backgroundColor:
+                  MyApp.lightThemeData ? Colors.cyanAccent : Color(0xff28282B),
               body: SafeArea(
                 child: Column(
                   children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            HomePageTop(firstName: firstName()),
-                            HomePageContent(
-                              sec: sec,
-                            ),
-                          ],
-                        ),
-                      ),
+                    HomePageTop(
+                        firstName: firstName(),
+                        homePageMainStateKey: myWidgetKey),
+                    HomePageContent(
+                      sec: sec,
                     )
                   ],
                 ),

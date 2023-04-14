@@ -36,6 +36,7 @@ class _FirstPageState extends State<FirstPage> {
     return WillPopScope(
       onWillPop: () => showExitPopup(context),
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: SafeArea(
           child: Column(
             // crossAxisAlignment: CrossAxisAlignment.,

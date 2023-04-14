@@ -23,10 +23,14 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  // final GlobalKey<MyAz> myWidgetKey = GlobalKey<_MyWidgetState>();\
+
+  // const MyApp({super.key});
+  static bool lightThemeData = true;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: "Routine Application",
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       theme: MyThemes.lightTheme(context),

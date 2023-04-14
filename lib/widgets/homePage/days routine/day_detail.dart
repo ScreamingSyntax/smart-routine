@@ -7,6 +7,8 @@ import 'package:routine_app/widgets/homePage/days%20routine/routine.dart';
 
 import 'package:velocity_x/velocity_x.dart';
 
+import '../../../main.dart';
+
 class DaysDetail extends StatelessWidget {
   final Data section;
   DaysDetail({
@@ -46,11 +48,17 @@ class DaysDetail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: MyApp.lightThemeData ? Colors.white : Color(0xff28282B),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            "Select Any Day".text.xl3.make().p12(),
+            "Select Any Day"
+                .text
+                .xl3
+                .color(MyApp.lightThemeData ? Colors.black : Colors.white)
+                .make()
+                .p12(),
             ListView.builder(
               shrinkWrap: true,
               itemCount: section.days!.length,
@@ -70,7 +78,13 @@ class DaysDetail extends StatelessWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: ListTile(
                           leading: iconList[index],
-                          title: Text(section.days![index].dayName.toString()),
+                          title: Text(
+                            section.days![index].dayName.toString(),
+                            style: TextStyle(
+                                color: (MyApp.lightThemeData
+                                    ? Colors.black
+                                    : Colors.white)),
+                          ),
                         ),
                       ),
                     ));

@@ -34,9 +34,9 @@ class MyThemes {
       brightness: Brightness.dark,
       colorScheme: ColorScheme(
           brightness: Brightness.dark,
-          primary: Colors.black,
+          primary: Colors.white,
           // ignore: use_full_hex_values_for_flutter_colors
-          onPrimary: creamishColor,
+          onPrimary: Colors.black,
           secondary: creamishColor,
           onSecondary: Colors.white,
           error: Colors.red,
@@ -47,5 +47,5 @@ class MyThemes {
           onSurface: Colors.blueGrey),
       cardColor: bluishColor,
       iconTheme: IconThemeData(color: Colors.white),
-      scaffoldBackgroundColor: bluishColor);
+      scaffoldBackgroundColor: Color(0xff28282B));
 }

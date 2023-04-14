@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:routine_app/controllers/local_storage.dart';
 import 'package:routine_app/widgets/dialogBox.dart';
+
+import '../models/user.dart';
 
 class AuthController {
   LocalStorage storage = LocalStorage();
@@ -65,6 +68,69 @@ class AuthController {
       showErrorMessage(context,
           message: "Server Issue", errorType: "Verification");
       print("Server Issue");
+    }
+    return false;
+  }
+
+  Future<bool> upDate(
+      BuildContext context, int id, String name, String email) async {
+    print(id);
+    print(name);
+    print(email);
+    try {
+      Response response = await patch(
+        Uri.parse(
+            "https://aaryansyproutineapplication.azurewebsites.net/api/users/update/"),
+        headers: {
+          'Authorization':
+              'Barear ${await storage.readFromStorage('token') as String}',
+          'Content-Type': 'application/json'
+        },
+        body: jsonEncode({"id": id, "name": name, "email": email}),
+      );
+      if (response.statusCode == 200) {
+        var toMap = jsonDecode(response.body);
+        if (toMap["success"] == 1) {
+          return showErrorMessage(context,
+              message: toMap["data"], errorType: "Existing Mail");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              
+        }
+        showErrorMessage(context,
+            message: "Successfully Changed", errorType: "Success");
+        storage.writeToStorage('id', id.toString());
+        storage.writeToStorage('username', name);
+        storage.writeToStorage('email', email);
+        UserDetail.details.clear();
+        UserDetail.details.add(User(id: id, name: name, email: email));
+      }
+    } catch (e) {
+      showErrorMessage(context,
+          message: "Something Went Wrong", errorType: "Server Issue");
     }
     return false;
   }
